@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+	<!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Receptionist Dashboard - Medical & Hospital - Bootstrap 5 Admin Template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="author" content="Dreams Technologies">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="assets/img/favicon.png?v=2.1">
+
+    <!-- Apple Icon -->
+    <link rel="apple-touch-icon" href="assets/img/apple-icon.png">
+
+    <!-- Theme Config Js -->
+    <script src="assets/js/theme-script.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css?v=2">
+
+    <!-- Fontawesome CSS -->
+	<link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css?v=2">
+	<link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css?v=2">
+
+    <!-- Tabler Icon CSS -->
+    <link rel="stylesheet" href="assets/plugins/tabler-icons/tabler-icons.min.css?v=2">
+
+    <!-- Simplebar CSS -->
+    <link rel="stylesheet" href="assets/plugins/simplebar/simplebar.min.css?v=2">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="assets/css/style.css?v=2" id="app-style">
+
+
+    <script src="assets/js/auth-guard.js"></script>
+</head>
+
+<body>
+
+    <!-- Begin Wrapper -->
+    <div class="main-wrapper">
+
+        <!-- Topbar Start -->
+        <header class="navbar-header">
+            <div class="page-container topbar-menu">
+                <div class="d-flex align-items-center gap-2">
+
+                    <!-- Logo -->
+                    <a href="index.html" class="logo">
+
+                        <!-- Logo Normal -->
+                        <span class="logo-light">
+                            <span class="logo-lg"><img src="assets/img/logo.svg?v=2.1" alt="logo"></span>
+                            <span class="logo-sm"><img src="assets/img/favicon.png?v=2.1" alt="small logo"></span>
+                        </span>
+
+                        <!-- Logo Dark -->
+                        <span class="logo-dark">
+                            <span class="logo-lg"><img src="assets/img/logo-white.svg?v=2.1" alt="dark logo"></span>
+                        </span>
+                    </a>
+
+                    <!-- Sidebar Mobile Button -->
+                    <a id="mobile_btn" class="mobile-btn" href="#sidebar">
+                        <i class="ti ti-menu-deep fs-24"></i>
+                    </a>
+
+                    <button class="sidenav-toggle-btn btn border-0 p-0 active" id="toggle_btn2">
+                        <i class="ti ti-arrow-right"></i>
+                    </button>
+
+                    <!-- Search -->
+                    <div class="me-auto d-flex align-items-center header-search d-lg-flex d-none">
+                        <!-- Search -->
+                        <div class="input-icon-start position-relative me-2">
+                            <span class="input-icon-addon">
+                                <i class="ti ti-search"></i>
+                            </span>
+                           <input type="text" class="form-control shadow-sm" placeholder="Search">
+                           <span class="input-icon-addon text-dark shadow fs-18 d-inline-flex p-0 header-search-icon"><i class="ti ti-command"></i></span>
+                        </div>
+                        <!-- /Search -->
+                    </div>
+
+                </div>
+
+                <div class="d-flex align-items-center">
+
+                    <!-- Search for Mobile -->
+                    <div class="header-item d-flex d-lg-none me-2">
+                        <button class="topbar-link btn btn-icon" data-bs-toggle="modal" data-bs-target="#searchModal" type="button">
+                            <i class="ti ti-search fs-16"></i>
+                        </button>
+                    </div>
+
+                    <!-- AI Assistance -->
+					<a href="javascript:void(0);" class="btn btn-liner-gradient me-3 d-lg-flex d-none">AI Assistance<i class="ti ti-chart-bubble-filled ms-1"></i></a>
+
+                    <div class="header-item">
+                        <div class="dropdown me-2">
+                            <a href="receptionist-new-appointment.html" class="btn topbar-link"><i class="ti ti-calendar-due"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="header-item">
+                        <div class="dropdown me-2">
+                            <a href="receptionist-profile-settings.html" class="btn topbar-link"><i class="ti ti-settings-2"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Light/Dark Mode Button -->
+                    <div class="header-item d-none d-sm-flex me-2">
+                        <button class="topbar-link btn btn-icon topbar-link" id="light-dark-mode" type="button">
+                            <i class="ti ti-moon fs-16"></i>
+                        </button>
+                    </div>
+
+
+					<!-- Notification Dropdown -->
+                    <div class="header-item">
+						<div class="dropdown me-3">
+
+							<button class="topbar-link btn btn-icon topbar-link dropdown-toggle drop-arrow-none" data-bs-toggle="dropdown" data-bs-offset="0,24" type="button" aria-haspopup="false" aria-expanded="false">
+								<i class="ti ti-bell-check fs-16 animate-ring"></i>
+								<span class="notification-badge"></span>
+							</button>
+
+							<div class="dropdown-menu p-0 dropdown-menu-end dropdown-menu-lg" style="min-height: 300px;">
+
+								<div class="p-2 border-bottom">
+									<div class="row align-items-center">
+										<div class="col">
+											<div class="m-0 fs-16 fw-semibold"> Notifications</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- Notification Body -->
+								<div class="notification-body position-relative z-2 rounded-0" data-simplebar>
+
+									<!-- Item-->
+									<div class="dropdown-item notification-item py-3 text-wrap border-bottom" id="notification-1">
+										<div class="d-flex">
+											<div class="me-2 position-relative flex-shrink-0">
+												<span class="avatar-md rounded-circle bg-light-primary d-flex align-items-center justify-content-center"><i class="ti ti-calendar-plus text-primary"></i></span>
+											</div>
+											<div class="flex-grow-1">
+												<p class="mb-0 fw-medium text-dark">New Appointment Request</p>
+												<p class="mb-1 text-wrap">
+													<span class="fw-medium text-dark">Emily Clark</span> requested a booking with Dr. Patel.
+												</p>
+												<div class="d-flex justify-content-between align-items-center">
+													<span class="fs-12"><i class="ti ti-clock me-1"></i>3 min ago</span>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<!-- Item-->
+									<div class="dropdown-item notification-item py-3 text-wrap" id="notification-2">
+										<div class="d-flex">
+											<div class="me-2 position-relative flex-shrink-0">
+												<span class="avatar-md rounded-circle bg-light-warning d-flex align-items-center justify-content-center"><i class="ti ti-list-numbers text-warning"></i></span>
+											</div>
+											<div class="flex-grow-1">
+												<p class="mb-0 fw-medium text-dark">Queue Update</p>
+												<p class="mb-1 text-wrap">
+													Token <span class="fw-medium text-dark">#A045</span> is waiting for check-in.
+												</p>
+												<div class="d-flex justify-content-between align-items-center">
+													<span class="fs-12"><i class="ti ti-clock me-1"></i>15 min ago</span>
+												</div>
+											</div>
+										</div>
+									</div>
+
+								</div>
+
+								<!-- View All-->
+								<div class="p-2 rounded-bottom border-top text-center">
+									<a href="notifications.html" class="text-center text-decoration-underline fs-14 mb-0">
+										View All Notifications
+									</a>
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+					<!-- User Dropdown -->
+					<div class="dropdown profile-dropdown d-flex align-items-center justify-content-center">
+                        <a href="javascript:void(0);" class="topbar-link dropdown-toggle drop-arrow-none position-relative" data-bs-toggle="dropdown" data-bs-offset="0,22" aria-haspopup="false" aria-expanded="false">
+                            <img src="assets/img/users/user-11.jpg?v=2.0" width="32" class="rounded-circle d-flex" alt="user-image">
+                            <span class="online text-success"><i class="ti ti-circle-filled d-flex bg-white rounded-circle border border-1 border-white"></i></span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end dropdown-menu-md p-2">
+
+                            <div class="d-flex align-items-center bg-light rounded-3 p-2 mb-2">
+                                <img src="assets/img/users/user-11.jpg?v=2.0" class="rounded-circle" width="42" height="42" alt="">
+                                <div class="ms-2">
+                                    <p class="fw-medium text-dark mb-0">Laura Bennett</p>
+                                    <span class="d-block fs-13">Receptionist</span>
+                                </div>
+                            </div>
+
+                            <!-- Item-->
+                            <a href="receptionist-profile-settings.html" class="dropdown-item">
+                                <i class="ti ti-user-circle me-1 align-middle"></i>
+                                <span class="align-middle">Profile Settings</span>
+                            </a>
+
+                            <!-- item -->
+                            <div class="form-check form-switch form-check-reverse d-flex align-items-center justify-content-between dropdown-item mb-0">
+                                <label class="form-check-label" for="notify"><i class="ti ti-bell me-1"></i>Notifications</label>
+                                <input class="form-check-input me-0" type="checkbox" role="switch" id="notify">
+                            </div>
+
+                            <!-- Item-->
+                            <div class="pt-2 mt-2 border-top">
+                                <a href="login.html" class="dropdown-item text-danger">
+                                    <i class="ti ti-logout me-1 fs-17 align-middle"></i>
+                                    <span class="align-middle">Log Out</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </header>
+        <!-- Topbar End -->
+
+        <!-- Search Modal -->
+        <div class="modal fade" id="searchModal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content bg-transparent">
+                    <div class="card shadow-none mb-0">
+                        <div class="px-3 py-2 d-flex flex-row align-items-center" id="search-top">
+                            <i class="ti ti-search fs-22"></i>
+                            <input type="search" class="form-control border-0" placeholder="Search">
+                            <button type="button" class="btn p-0" data-bs-dismiss="modal" aria-label="Close"><i class="ti ti-x fs-22"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidenav Menu Start -->
+        <div class="sidebar" id="sidebar">
+
+            <!-- Start Logo -->
+            <div class="sidebar-logo">
+                <div>
+                    <!-- Logo Normal -->
+                    <a href="index.html" class="logo logo-normal">
+                        <img src="assets/img/logo.svg?v=2.1" alt="Logo">
+                    </a>
+
+                    <!-- Logo Small -->
+                    <a href="index.html" class="logo-small">
+                        <img src="assets/img/favicon.png?v=2.1" alt="Logo">
+                    </a>
+
+                    <!-- Logo Dark -->
+                    <a href="index.html" class="dark-logo">
+                        <img src="assets/img/logo-white.svg?v=2.1" alt="Logo">
+                    </a>
+                </div>
+                <button class="sidenav-toggle-btn btn border-0 p-0 active" id="toggle_btn">
+                    <i class="ti ti-arrow-left text-body"></i>
+                </button>
+
+                <!-- Sidebar Menu Close -->
+                <button class="sidebar-close">
+                    <i class="ti ti-x align-middle"></i>
+                </button>
+            </div>
+            <!-- End Logo -->
+
+            <!-- Sidenav Menu -->
+            <div class="sidebar-inner" data-simplebar>
+                <div id="sidebar-menu" class="sidebar-menu">
+                    <ul>
+                        <li class="menu-title"><span>Main Menu</span></li>
+                        <li>
+                            <ul>
+                                <li class="active">
+                                    <a href="receptionist-dashboard.html">
+                                        <i class="ti ti-layout-dashboard"></i><span>Dashboard</span>
+                                    </a>
+                                </li>
+                                <li class="submenu">
+                                    <a href="javascript:void(0);">
+                                        <i class="ti ti-calendar-check"></i><span>Appointments</span>
+                                        <span class="menu-arrow"></span>
+                                    </a>
+                                    <ul>
+                                        <li><a href="receptionist-appointments.html">Appointments</a></li>
+                                        <li><a href="receptionist-new-appointment.html">New Appointment</a></li>
+                                        <li><a href="receptionist-appointment-calendar.html">Calendar View</a></li>
+                                        <li><a href="receptionist-appointment-requests.html">Appointment Requests</a></li>
+                                    </ul>
+                                </li>
+                                <li class="submenu">
+                                    <a href="javascript:void(0);">
+                                        <i class="ti ti-list-numbers"></i><span>Queue Management</span>
+                                        <span class="menu-arrow"></span>
+                                    </a>
+                                    <ul>
+                                        <li><a href="receptionist-queue-live.html">Live Queue</a></li>
+                                        <li><a href="receptionist-queue-generate-token.html">Generate Token</a></li>
+                                        <li><a href="receptionist-queue-waiting-list.html">Waiting List</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="receptionist-patients.html">
+                                        <i class="ti ti-user-heart"></i><span>Patients</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="receptionist-create-patient.html">
+                                        <i class="ti ti-user-plus"></i><span>Register Patient</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="receptionist-payments.html">
+                                        <i class="ti ti-cards"></i><span>Payments</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="receptionist-messages.html">
+                                        <i class="ti ti-messages"></i><span>Messages</span>
+                                    </a>
+                                </li>
+                                <li class="submenu">
+                                    <a href="javascript:void(0);">
+                                        <i class="ti ti-settings"></i><span>Settings</span>
+                                        <span class="menu-arrow"></span>
+                                    </a>
+                                    <ul>
+                                        <li><a href="receptionist-profile-settings.html">Profile Settings</a></li>
+                                        <li><a href="receptionist-password-settings.html">Change Password</a></li>
+                                        <li><a href="receptionist-appointment-preferences.html">Appointment Preferences</a></li>
+                                        <li><a href="receptionist-registration-preferences.html">Patient Registration Preferences</a></li>
+                                        <li><a href="receptionist-queue-preferences.html">Queue Preferences</a></li>
+                                        <li><a href="receptionist-printer-settings.html">Printer Settings</a></li>
+                                        <li><a href="receptionist-notification-settings.html">Notifications</a></li>
+                                        <li><a href="receptionist-security-settings.html">Security</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                </div>
+                <div class="sidebar-footer border-top mt-3">
+                    <div class="trial-item mt-0 p-3 text-center">
+                        <div class="trial-item-icon rounded-4 mb-3 p-2 text-center shadow-sm d-inline-flex">
+                            <img src="assets/img/icons/sidebar-icon.svg?v=2.0" alt="img">
+                        </div>
+                        <div>
+                            <h6 class="fs-14 fw-semibold mb-1">Upgrade To Pro</h6>
+                            <p class="fs-13 mb-0">Check 1 min video and begin use NepXMedica like a pro</p>
+                        </div>
+                        <a href="javascript:void(0);" class="close-icon shadow-sm"><i class="ti ti-x"></i></a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- Sidenav Menu End -->
+
+        <!-- ========================
+			Start Page Content
+		========================= -->
+
+        <div class="page-wrapper">
+
+            <!-- Start Content -->
+            <div class="content pb-0">
+
+                <!-- Page Header -->
+                <div class="d-flex align-items-sm-center justify-content-between flex-wrap gap-2 mb-4">
+                    <div>
+                        <h1 class="fw-bold mb-0 fs-18">Receptionist Dashboard</h1>
+                    </div>
+                    <div class="d-flex align-items-center flex-wrap gap-2">
+                       <a href="receptionist-new-appointment.html" class="btn btn-primary d-inline-flex align-items-center"><i class="ti ti-plus me-1"></i>New Appointment</a>
+                       <a href="receptionist-create-patient.html" class="btn btn-outline-white bg-white d-inline-flex align-items-center"><i class="ti ti-user-plus me-1"></i>Register Patient</a>
+                    </div>
+				</div>
+				<!-- End Page Header -->
+
+                <!-- row start -->
+                <div class="row">
+
+                    <!-- col start -->
+                    <div class="col-xxl-3 col-xl-6 col-sm-6 d-flex">
+                        <div class="card shadow-sm border-0 flex-fill w-100 position-relative overflow-hidden stat-card-premium">
+                           <div class="card-body position-relative z-1">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div>
+                                        <p class="mb-1">Today's Appointments</p>
+                                        <div class="d-flex align-items-center gap-1">
+                                            <h2 class="fw-bold mb-0 fs-28">86</h2>
+                                            <span class="badge fw-medium bg-success flex-shrink-0">+18%</span>
+                                        </div>
+                                    </div>
+                                    <span class="avatar avatar-lg bg-primary text-white rounded-circle flex-shrink-0" style="box-shadow: 0 8px 16px rgba(var(--primary-rgb), 0.35);"><i class="ti ti-calendar-heart fs-24"></i></span>
+                                </div>
+                                <p class="mb-0 fs-13 text-truncate">scheduled for today </p>
+                           </div>
+                        </div>
+                    </div>
+                    <!-- col end -->
+
+                    <!-- col start -->
+                    <div class="col-xxl-3 col-xl-6 col-sm-6 d-flex">
+                        <div class="card shadow-sm border-0 flex-fill w-100 position-relative overflow-hidden stat-card-premium">
+                           <div class="card-body position-relative z-1">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div>
+                                        <p class="mb-1">Patients Checked In</p>
+                                        <div class="d-flex align-items-center gap-1">
+                                            <h2 class="fw-bold mb-0 fs-28">54</h2>
+                                            <span class="badge fw-medium bg-success flex-shrink-0">+12%</span>
+                                        </div>
+                                    </div>
+                                    <span class="avatar avatar-lg bg-success text-white rounded-circle flex-shrink-0" style="box-shadow: 0 8px 16px rgba(var(--success-rgb), 0.35);"><i class="ti ti-user-check fs-24"></i></span>
+                                </div>
+                                <p class="mb-0 fs-13 text-truncate">so far today </p>
+                           </div>
+                        </div>
+                    </div>
+                    <!-- col end -->
+
+                    <!-- col start -->
+                    <div class="col-xxl-3 col-xl-6 col-sm-6 d-flex">
+                        <div class="card shadow-sm border-0 flex-fill w-100 position-relative overflow-hidden stat-card-premium">
+                           <div class="card-body position-relative z-1">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div>
+                                        <p class="mb-1">Waiting in Queue</p>
+                                        <div class="d-flex align-items-center gap-1">
+                                            <h2 class="fw-bold mb-0 fs-28">17</h2>
+                                            <span class="badge fw-medium bg-warning flex-shrink-0">Live</span>
+                                        </div>
+                                    </div>
+                                    <span class="avatar avatar-lg bg-warning text-white rounded-circle flex-shrink-0" style="box-shadow: 0 8px 16px rgba(var(--warning-rgb), 0.35);"><i class="ti ti-list-numbers fs-24"></i></span>
+                                </div>
+                                <p class="mb-0 fs-13 text-truncate">currently in queue </p>
+                           </div>
+                        </div>
+                    </div>
+                    <!-- col end -->
+
+                    <!-- col start -->
+                    <div class="col-xxl-3 col-xl-6 col-sm-6 d-flex">
+                        <div class="card shadow-sm border-0 flex-fill w-100 position-relative overflow-hidden stat-card-premium">
+                           <div class="card-body position-relative z-1">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div>
+                                        <p class="mb-1">Pending Requests</p>
+                                        <div class="d-flex align-items-center gap-1">
+                                            <h2 class="fw-bold mb-0 fs-28">9</h2>
+                                            <span class="badge fw-medium bg-danger flex-shrink-0">-5%</span>
+                                        </div>
+                                    </div>
+                                    <span class="avatar avatar-lg bg-danger text-white rounded-circle flex-shrink-0" style="box-shadow: 0 8px 16px rgba(var(--danger-rgb), 0.35);"><i class="ti ti-clock-exclamation fs-24"></i></span>
+                                </div>
+                                <p class="mb-0 fs-13 text-truncate">appointment requests </p>
+                           </div>
+                        </div>
+                    </div>
+                    <!-- col end -->
+
+                 </div>
+                <!-- row end -->
+
+                <!-- row start -->
+                <div class="row">
+
+                    <!-- col start -->
+                    <div class="col-xl-7 d-flex">
+                        <div class="card shadow-sm flex-fill w-100">
+                            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                <h2 class="fw-bold mb-0 fs-16">Daily Footfall</h2>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                    <p class="mb-0 d-inline-flex align-items-center fs-13"><i class="ti ti-point-filled me-1 fs-18 text-primary"></i>Checked In</p>
+                                    <p class="mb-0 d-inline-flex align-items-center fs-13"><i class="ti ti-point-filled me-1 fs-18 text-success"></i>Completed</p>
+                                </div>
+                            </div>
+                            <div class="card-body pb-0">
+                                <div id="receptionist-footfall"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- col end -->
+
+                    <!-- col start -->
+                    <div class="col-xl-5 d-flex">
+                        <div class="card shadow-sm flex-fill w-100">
+                            <div class="card-header d-flex align-items-center justify-content-between">
+                                <h2 class="fw-bold mb-0 fs-16">Appointments by Channel</h2>
+                            </div>
+                            <div class="card-body">
+                                <div id="receptionist-channel"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- col end -->
+
+                </div>
+                <!-- row end -->
+
+                <!-- row start -->
+                <div class="row">
+
+                    <!-- col start -->
+                    <div class="col-xl-8 d-flex">
+                        <!-- card start -->
+                        <div class="card shadow-sm flex-fill w-100">
+                            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                <h2 class="fw-bold mb-0 fs-16">Today's Appointments</h2>
+                                <div class="dropdown">
+                                    <a href="javascript:void(0);" class="btn btn-sm px-2 border shadow-sm btn-outline-white d-inline-flex align-items-center" data-bs-toggle="dropdown">
+                                        Today <i class="ti ti-chevron-down ms-1"></i>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#">Today</a></li>
+                                        <li><a class="dropdown-item" href="#">This Week</a></li>
+                                        <li><a class="dropdown-item" href="#">This Month</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <!-- Table start -->
+                                <div class="table-responsive table-nowrap">
+                                    <table class="table border">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>Patient</th>
+                                                <th>Doctor</th>
+                                                <th>Time</th>
+                                                <th>Status</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <a href="javascript:void(0);" class="avatar me-2">
+                                                            <img src="assets/img/profiles/avatar-06.jpg?v=2.0" alt="img" class="rounded-circle">
+                                                        </a>
+                                                        <div>
+                                                          <h6 class="fs-14 mb-1"><a href="javascript:void(0);" class="fw-medium">Alberto Ripley</a></h6>
+                                                          <p class="mb-0 fs-13">#AP455698</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>Dr. Michael Smith</td>
+                                                <td>09:30 AM</td>
+                                                <td><span class="badge bg-success fw-medium">Checked In</span></td>
+                                                <td>
+                                                    <a href="javascript:void(0);" class="btn btn-sm btn-outline-white">View</a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <a href="javascript:void(0);" class="avatar me-2">
+                                                            <img src="assets/img/profiles/avatar-12.jpg?v=2.0" alt="img" class="rounded-circle">
+                                                        </a>
+                                                        <div>
+                                                          <h6 class="fs-14 mb-1"><a href="javascript:void(0);" class="fw-medium">Susan Babin</a></h6>
+                                                          <p class="mb-0 fs-13">#AP455699</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>Dr. Sarah Patel</td>
+                                                <td>10:15 AM</td>
+                                                <td><span class="badge bg-warning fw-medium">Waiting</span></td>
+                                                <td>
+                                                    <a href="javascript:void(0);" class="btn btn-sm btn-primary">Check In</a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <a href="javascript:void(0);" class="avatar me-2">
+                                                            <img src="assets/img/profiles/avatar-08.jpg?v=2.0" alt="img" class="rounded-circle">
+                                                        </a>
+                                                        <div>
+                                                          <h6 class="fs-14 mb-1"><a href="javascript:void(0);" class="fw-medium">Carol Lam</a></h6>
+                                                          <p class="mb-0 fs-13">#AP455700</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>Dr. Michael Smith</td>
+                                                <td>11:00 AM</td>
+                                                <td><span class="badge bg-info fw-medium">Scheduled</span></td>
+                                                <td>
+                                                    <a href="javascript:void(0);" class="btn btn-sm btn-outline-white">View</a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <a href="javascript:void(0);" class="avatar me-2">
+                                                            <img src="assets/img/profiles/avatar-09.jpg?v=2.0" alt="img" class="rounded-circle">
+                                                        </a>
+                                                        <div>
+                                                          <h6 class="fs-14 mb-1"><a href="javascript:void(0);" class="fw-medium">Diana White</a></h6>
+                                                          <p class="mb-0 fs-13">#AP455701</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>Dr. Michael Smith</td>
+                                                <td>11:00 AM</td>
+                                                <td><span class="badge bg-success fw-medium">Checked In</span></td>
+                                                <td>
+                                                    <a href="javascript:void(0);" class="btn btn-sm btn-outline-white">View</a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- Table end -->
+                            </div>
+                        </div>
+                        <!-- card end -->
+                    </div>
+                    <!-- col end -->
+
+                     <!-- col start -->
+                    <div class="col-xl-4 d-flex">
+                        <div class="card shadow-sm flex-fill w-100">
+                            <div class="card-header d-flex align-items-center justify-content-between">
+                                <h2 class="fw-bold mb-0 fs-16">Live Queue</h2>
+                                <span class="badge bg-soft-success text-success fw-medium border border-success"><i class="ti ti-point-filled"></i>Live</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-3">
+                                    <div>
+                                        <h6 class="fs-14 mb-1">Token #A042</h6>
+                                        <p class="mb-0 fs-13">Emily Clark</p>
+                                    </div>
+                                    <span class="badge bg-success fw-medium">In Progress</span>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-3">
+                                    <div>
+                                        <h6 class="fs-14 mb-1">Token #A043</h6>
+                                        <p class="mb-0 fs-13">John Carter</p>
+                                    </div>
+                                    <span class="badge bg-warning fw-medium">Waiting</span>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-3">
+                                    <div>
+                                        <h6 class="fs-14 mb-1">Token #A044</h6>
+                                        <p class="mb-0 fs-13">Jimmy John</p>
+                                    </div>
+                                    <span class="badge bg-warning fw-medium">Waiting</span>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mb-0">
+                                    <div>
+                                        <h6 class="fs-14 mb-1">Token #A045</h6>
+                                        <p class="mb-0 fs-13">Sophia White</p>
+                                    </div>
+                                    <span class="badge bg-info fw-medium">Scheduled</span>
+                                </div>
+                                <a href="receptionist-queue-live.html" class="btn btn-light w-100 mt-3 fs-13">View Full Queue</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- col end -->
+                </div>
+                <!-- row end -->
+
+                <!-- row start -->
+                <div class="row">
+
+                    <!-- col start -->
+                    <div class="col-xl-4 d-flex">
+                        <div class="card shadow-sm flex-fill w-100">
+                            <div class="card-header">
+                                <h2 class="fw-bold mb-0 fs-16">Payment Collection Today</h2>
+                            </div>
+                            <div class="card-body">
+                                <div id="receptionist-payments"></div>
+                                <div class="d-flex align-items-center justify-content-center gap-3 mt-2">
+                                    <div class="text-center">
+                                        <p class="d-flex align-items-center mb-1 fs-13"><i class="ti ti-circle-filled text-primary fs-10 me-1"></i>Cash</p>
+                                        <div class="fw-bold mb-0 fs-14">NPR 1,240</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="d-flex align-items-center mb-1 fs-13"><i class="ti ti-circle-filled text-success fs-10 me-1"></i>Card</p>
+                                        <div class="fw-bold mb-0 fs-14">NPR 2,860</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="d-flex align-items-center mb-1 fs-13"><i class="ti ti-circle-filled text-warning fs-10 me-1"></i>Insurance</p>
+                                        <div class="fw-bold mb-0 fs-14">NPR 980</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- col end -->
+
+                    <!-- col start -->
+                    <div class="col-xl-8 d-flex">
+                        <div class="card shadow-sm flex-fill w-100">
+                            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                <h2 class="fw-bold mb-0 fs-16">Appointment Requests</h2>
+                                <a href="receptionist-appointment-requests.html" class="btn btn-sm btn-outline-white">View All</a>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive table-nowrap">
+                                    <table class="table border">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>Patient</th>
+                                                <th>Preferred Doctor</th>
+                                                <th>Requested Time</th>
+                                                <th>Channel</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="fw-medium text-dark">Emily Clark</td>
+                                                <td>Dr. Sarah Patel</td>
+                                                <td>Today, 03:30 PM</td>
+                                                <td><span class="badge badge-soft-primary border border-primary fw-medium">Online</span></td>
+                                                <td>
+                                                    <a href="javascript:void(0);" class="btn btn-sm btn-primary me-1">Accept</a>
+                                                    <a href="javascript:void(0);" class="btn btn-sm btn-outline-white">Decline</a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-medium text-dark">David Anderson</td>
+                                                <td>Dr. Michael Smith</td>
+                                                <td>Tomorrow, 10:00 AM</td>
+                                                <td><span class="badge badge-soft-info border border-info fw-medium">Phone</span></td>
+                                                <td>
+                                                    <a href="javascript:void(0);" class="btn btn-sm btn-primary me-1">Accept</a>
+                                                    <a href="javascript:void(0);" class="btn btn-sm btn-outline-white">Decline</a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-medium text-dark">Michael Johnson</td>
+                                                <td>Dr. Sarah Patel</td>
+                                                <td>Tomorrow, 11:45 AM</td>
+                                                <td><span class="badge badge-soft-secondary border border-secondary fw-medium">Walk-in</span></td>
+                                                <td>
+                                                    <a href="javascript:void(0);" class="btn btn-sm btn-primary me-1">Accept</a>
+                                                    <a href="javascript:void(0);" class="btn btn-sm btn-outline-white">Decline</a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-medium text-dark">David Lee</td>
+                                                <td>Dr. Emily Carter</td>
+                                                <td>Tomorrow, 11:55 AM</td>
+                                                <td><span class="badge badge-soft-secondary border border-secondary fw-medium">Walk-in</span></td>
+                                                <td>
+                                                    <a href="javascript:void(0);" class="btn btn-sm btn-primary me-1">Accept</a>
+                                                    <a href="javascript:void(0);" class="btn btn-sm btn-outline-white">Decline</a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-medium text-dark"> Mick Thompson</td>
+                                                <td>Dr. Sarah Johnson</td>
+                                                <td>Tomorrow, 12:30 AM</td>
+                                                <td><span class="badge badge-soft-secondary border border-secondary fw-medium">Walk-in</span></td>
+                                                <td>
+                                                    <a href="javascript:void(0);" class="btn btn-sm btn-primary me-1">Accept</a>
+                                                    <a href="javascript:void(0);" class="btn btn-sm btn-outline-white">Decline</a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- col end -->
+
+                </div>
+                <!-- row end -->
+
+            </div>
+            <!-- End Content -->
+
+            <!-- Footer Start -->
+            <div class="footer text-center bg-white p-2 border-top">
+                <p class="text-dark mb-0">2026 &copy; <a href="javascript:void(0);" class="link-primary">NepXMedica</a>, All Rights Reserved</p>
+            </div>
+            <!-- Footer End -->
+
+        </div>
+
+        <!-- ========================
+			End Page Content
+		========================= -->
+
+    </div>
+    <!-- End Wrapper -->
+
+    <!-- jQuery -->
+    <script src="assets/js/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+
+	<!-- Simplebar JS -->
+	<script src="assets/plugins/simplebar/simplebar.min.js"></script>
+
+    <!-- Chart JS -->
+    <script src="assets/plugins/apexchart/apexcharts.min.js"></script>
+    <script src="assets/plugins/apexchart/chart-data.js"></script> 
+
+    <!-- Main JS -->
+    <script src="assets/js/script.js"></script>
+
+<script src="assets/js/api-connector.js?v=2.0"></script>
+<script src="assets/js/nepxmedica-portals.js"></script>
+</body>
+
+</html>

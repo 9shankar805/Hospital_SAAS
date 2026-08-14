@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Super Admin Control Center - NepXMedica SaaS</title>
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css?v=2">
+  <link rel="stylesheet" href="assets/plugins/tabler-icons/tabler-icons.min.css?v=2.0">
+  <link rel="stylesheet" href="assets/css/style.css?v=2">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f4f6f9; color: #0a1b39; }
+    .super-sidebar { width: 260px; background: #0f172a; color: #94a3b8; min-height: 100vh; position: fixed; left: 0; top: 0; bottom: 0; z-index: 1000; }
+    .super-sidebar .nav-link { color: #94a3b8; padding: 12px 20px; font-weight: 500; display: flex; align-items: center; gap: 12px; border-radius: 8px; margin: 4px 12px; }
+    .super-sidebar .nav-link:hover, .super-sidebar .nav-link.active { background: #1e293b; color: #38bdf8; }
+    .super-content { margin-left: 260px; padding: 30px; }
+    .stat-card-saas { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .stat-icon { width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  </style>
+
+    <script src="assets/js/auth-guard.js"></script>
+</head>
+<body>
+
+  <!-- Super Admin Sidebar -->
+  <aside class="super-sidebar">
+    <div class="p-4 border-bottom border-secondary d-flex align-items-center gap-2">
+      <img src="assets/img/logo-white.svg?v=2.1" alt="NepXMedica" height="32">
+      <span class="badge bg-danger ms-auto" style="font-size: 9px;">Super Admin</span>
+    </div>
+    <div class="py-3">
+      <a href="super-admin-dashboard.html" class="nav-link active"><i class="ti ti-layout-dashboard fs-18"></i> SaaS Dashboard</a>
+      <a href="super-admin-clinics.html" class="nav-link"><i class="ti ti-building-hospital fs-18"></i> Tenant Clinics</a>
+      <a href="super-admin-plans.html" class="nav-link"><i class="ti ti-packages fs-18"></i> Subscription Plans</a>
+      <a href="super-admin-revenue.html" class="nav-link"><i class="ti ti-report-money fs-18"></i> MRR Analytics</a>
+      <a href="index.html" class="nav-link"><i class="ti ti-medical-cross fs-18"></i> Clinic App View</a>
+      <a href="saas.html" class="nav-link"><i class="ti ti-world fs-18"></i> SaaS Landing Page</a>
+    </div>
+  </aside>
+
+  <!-- Main Super Admin Content -->
+  <main class="super-content">
+    <!-- Top Header -->
+    <div class="d-flex align-items-center justify-content-between mb-4 bg-white p-3 rounded-3 shadow-sm border">
+      <div>
+        <h3 class="fw-bold mb-0">Platform Super Admin Control Center</h3>
+        <p class="text-muted mb-0 small">Manage all registered hospital tenants, billing subscriptions, and global platform health.</p>
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill fw-semibold">
+          <i class="ti ti-point-filled"></i> System Status: 100% Operational
+        </span>
+        <a href="saas.html" class="btn btn-outline-primary btn-sm"><i class="ti ti-logout me-1"></i> Exit Portal</a>
+      </div>
+    </div>
+
+    <!-- SaaS Platform Metric Cards -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-3">
+        <div class="stat-card-saas">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="text-muted small fw-semibold">Total Hospital Tenants</span>
+            <div class="stat-icon bg-primary-subtle text-primary"><i class="ti ti-building-hospital"></i></div>
+          </div>
+          <h2 class="fw-bold mb-0 total-clinics-count">148</h2>
+          <span class="text-success small fw-medium"><i class="ti ti-arrow-up-right"></i> +12 new this month</span>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card-saas">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="text-muted small fw-semibold">Active Subscriptions</span>
+            <div class="stat-icon bg-success-subtle text-success"><i class="ti ti-square-check"></i></div>
+          </div>
+          <h2 class="fw-bold mb-0 active-clinics-count">142</h2>
+          <span class="text-muted small">96% active retention</span>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card-saas">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="text-muted small fw-semibold">Monthly Recurring Revenue</span>
+            <div class="stat-icon bg-warning-subtle text-warning"><i class="ti ti-currency-dollar"></i></div>
+          </div>
+          <h2 class="fw-bold mb-0 mrr-total">NPR 64,25,000</h2>
+          <span class="text-success small fw-medium"><i class="ti ti-arrow-up-right"></i> +18.4% MRR growth</span>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card-saas">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="text-muted small fw-semibold">Total Patients Served</span>
+            <div class="stat-icon bg-info-subtle text-info"><i class="ti ti-users"></i></div>
+          </div>
+          <h2 class="fw-bold mb-0 total-patients-served">1.24M</h2>
+          <span class="text-muted small">Across all hospital branches</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tenant Clinics Table -->
+    <div class="card border-0 shadow-sm rounded-3">
+      <div class="card-header bg-white py-3 d-flex align-items-center justify-content-between border-bottom">
+        <h5 class="fw-bold mb-0"><i class="ti ti-list me-2 text-primary"></i> Registered Hospital Tenants & Clinics</h5>
+        <button class="btn btn-primary btn-sm fw-semibold" style="background-color: #2e37a4;"><i class="ti ti-plus me-1"></i> Provision New Hospital Tenant</button>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Hospital / Clinic Name</th>
+              <th>Subdomain</th>
+              <th>Admin Contact</th>
+              <th>Subscription Plan</th>
+              <th>Status</th>
+              <th>Renewal Date</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="dashboard-clinics-table-body">
+            <tr><td colspan="7" class="text-center">Loading clinics...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const token = localStorage.getItem('auth_token');
+      const fetchOptions = {
+        headers: { 'Authorization': `Bearer ${token}` }
+      };
+
+      // Load Stats
+      fetch("/api/v1/superadmin/stats", fetchOptions)
+        .then(r => r.json())
+        .then(res => {
+          if(res.status === 'success' && res.data) {
+            document.querySelector('.total-clinics-count').textContent = res.data.total_clinics;
+            document.querySelector('.active-clinics-count').textContent = res.data.active_clinics;
+            const mrr = Number(res.data.monthly_recurring_revenue.replace(/,/g, ''));
+            document.querySelector('.mrr-total').textContent = 'NPR ' + mrr.toLocaleString();
+            document.querySelector('.total-patients-served').textContent = res.data.total_patients_served || '12,45,800';
+          }
+        }).catch(e => console.log('Super Admin API Live', e));
+
+      // Load Clinics Table
+      fetch("/api/v1/superadmin/clinics", fetchOptions)
+        .then(r => r.json())
+        .then(res => {
+          if(res.status === 'success' && res.data) {
+            const tbody = document.getElementById('dashboard-clinics-table-body');
+            tbody.innerHTML = '';
+            // Only show latest 5
+            res.data.slice(0, 5).forEach(clinic => {
+              const badgeClass = clinic.status === 'active' ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger';
+              const formattedDate = clinic.created_at ? new Date(clinic.created_at).toLocaleDateString() : 'N/A';
+              
+              tbody.innerHTML += `
+                <tr>
+                  <td>
+                    <div class="fw-bold">${clinic.name}</div>
+                    <div class="text-muted small">ID: TENANT-${clinic.id}</div>
+                  </td>
+                  <td><span class="badge bg-light text-dark font-monospace">${clinic.subdomain}.nepxmedica.techprocod.com.np</span></td>
+                  <td>${clinic.admin_email}<br><span class="text-muted small">${clinic.phone || 'N/A'}</span></td>
+                  <td><span class="badge bg-primary-subtle text-primary fw-semibold">Plan ${clinic.plan_id}</span></td>
+                  <td><span class="badge ${badgeClass} border">${clinic.status.toUpperCase()}</span></td>
+                  <td>${formattedDate}</td>
+                  <td class="text-end">
+                    <a href="http://${clinic.subdomain}.nepxmedica.techprocod.com.np" target="_blank" class="btn btn-outline-primary btn-sm me-1"><i class="ti ti-eye"></i> Access Dashboard</a>
+                  </td>
+                </tr>
+              `;
+            });
+          }
+        });
+    });
+  </script>
+<script src="assets/js/api-connector.js?v=2.0"></script>
+</body>
+</html>

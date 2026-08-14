@@ -1,0 +1,2144 @@
+================================================================================
+  PRECLINIC — FULL FRONTEND ↔ BACKEND WIRING TODO LIST
+  Project: Hospital Management SaaS (Laravel 13 + Bootstrap 5)
+  Total Pages: 351 HTML pages
+  Goal: Every page, every chart (ApexCharts), every DataTable, every form
+        must be wired to real Laravel API endpoints with live data.
+================================================================================
+
+STATUS KEY:  [ ] = TODO   [~] = IN PROGRESS   [x] = DONE
+
+================================================================================
+  PHASE 1 — DATABASE FOUNDATION
+================================================================================
+
+[x] 1.01  Create migration: vitals table
+          (patient_id, heart_rate, blood_pressure, oxygen_level, weight,
+           height, temperature, bmi, pulse, status, logged_at)
+
+[x] 1.02  Create migration: staff table
+          (staff_code, name, email, phone, role, department_id,
+           designation, avatar, salary, joining_date, status)
+
+[x] 1.03  Create migration: leave_types table
+          (name, days_allowed, status)
+
+[x] 1.04  Create migration: leaves table — polymorphic (doctor or staff)
+          (leavable_id, leavable_type, leave_type_id, from_date,
+           to_date, days, reason, status: Pending/Approved/Rejected)
+
+[x] 1.05  Create migration: attendance table — polymorphic
+          (attendable_id, attendable_type, date, check_in, check_out,
+           status: Present/Absent/Late/Half Day)
+
+[x] 1.06  Create migration: holidays table
+          (name, date, type: Public/Optional, description)
+
+[x] 1.07  Create migration: payrolls table — polymorphic
+          (payrollable_id, payrollable_type, month, basic_salary,
+           allowances, deductions, net_salary, payment_status, paid_date)
+
+[x] 1.08  Create migration: medicines table
+          (name, generic_name, category, unit, price, stock,
+           reorder_level, expiry_date, batch_no, status)
+
+[x] 1.09  Create migration: suppliers table
+          (name, email, phone, address, status)
+
+[x] 1.10  Create migration: purchase_orders table
+          (po_number, supplier_id, medicine_id, quantity, unit_price,
+           total_amount, status: Pending/Delivered/Cancelled,
+           order_date, expected_delivery)
+
+[x] 1.11  Create migration: stock_transfers table
+          (medicine_id, from_location, to_location, quantity,
+           status, transferred_at)
+
+[x] 1.12  Create migration: expense_categories table (name, color)
+
+[x] 1.13  Create migration: expenses table
+          (category_id, title, amount, expense_date, notes, status)
+
+[x] 1.14  Create migration: income table
+          (source, amount, income_date, notes)
+
+[x] 1.15  Create migration: lab_reports table
+          (report_number, patient_id, doctor_id, test_name, category,
+           result, file_path, status: Pending/Completed, test_date)
+
+[x] 1.16  Create migration: clinical_notes table
+          (patient_id, staff_id, note, note_type: General/Shift/Critical)
+
+[x] 1.17  Create migration: notifications_log table — polymorphic
+          (notifiable_id, notifiable_type, title, message,
+           type: info/warning/success/danger, is_read)
+
+[x] 1.18  Create migration: roles table (name, display_name, description)
+
+[x] 1.19  Create migration: permissions table (name, module, action)
+
+[x] 1.20  Create migration: role_permissions pivot table
+
+[x] 1.21  Alter users table — add role_id, avatar, phone, status columns
+
+[x] 1.22  Create migration: services table (name, description, fee, status)
+
+[x] 1.23  Create migration: specializations table (name, description, status)
+
+[x] 1.24  Create migration: doctor_reviews table
+          (doctor_id, patient_id, rating, review, status)
+
+[x] 1.25  Create migration: insurance_claims table
+          (patient_id, appointment_id, insurer_name, claim_number,
+           amount, status: Pending/Approved/Rejected/Paid)
+
+[x] 1.26  Create migration: assets table
+          (name, category, serial_number, purchase_date,
+           purchase_price, location, status: Active/Maintenance/Disposed)
+
+[x] 1.27  Create migration: queues table — extend existing
+          Add columns: priority (Normal/Urgent/Emergency),
+          notes, called_at, completed_at
+
+[x] 1.28  Run: php artisan migrate:fresh
+
+
+================================================================================
+  PHASE 2 — MODELS
+================================================================================
+
+[x] 2.01  Model: Vital           (fillable, casts, belongsTo Patient)
+[x] 2.02  Model: Staff           (fillable, hasMany leaves/attendance/payrolls via morph)
+[x] 2.03  Model: LeaveType       (fillable)
+[x] 2.04  Model: Leave           (fillable, morphTo leavable, belongsTo LeaveType)
+[x] 2.05  Model: Attendance      (fillable, morphTo attendable)
+[x] 2.06  Model: Holiday         (fillable)
+[x] 2.07  Model: Payroll         (fillable, morphTo payrollable)
+[x] 2.08  Model: Medicine        (fillable, hasMany PurchaseOrders)
+[x] 2.09  Model: Supplier        (fillable, hasMany PurchaseOrders)
+[x] 2.10  Model: PurchaseOrder   (fillable, belongsTo Supplier, belongsTo Medicine)
+[x] 2.11  Model: StockTransfer   (fillable, belongsTo Medicine)
+[x] 2.12  Model: ExpenseCategory (fillable, hasMany Expenses)
+[x] 2.13  Model: Expense         (fillable, belongsTo ExpenseCategory)
+[x] 2.14  Model: Income          (fillable)
+[x] 2.15  Model: LabReport       (fillable, belongsTo Patient, belongsTo Doctor)
+[x] 2.16  Model: ClinicalNote    (fillable, belongsTo Patient, belongsTo Staff)
+[x] 2.17  Model: NotificationLog (fillable, morphTo notifiable)
+[x] 2.18  Model: Role            (fillable, belongsToMany Permission)
+[x] 2.19  Model: Permission      (fillable, belongsToMany Role)
+[x] 2.20  Model: Service         (fillable)
+[x] 2.21  Model: Specialization  (fillable)
+[x] 2.22  Model: DoctorReview    (fillable, belongsTo Doctor, belongsTo Patient)
+[x] 2.23  Model: InsuranceClaim  (fillable, belongsTo Patient, belongsTo Appointment)
+[x] 2.24  Model: Asset           (fillable)
+[x] 2.25  Update User model      — belongsTo Role, add role_id/avatar/phone/status
+[x] 2.26  Update Doctor model    — hasMany Reviews, hasMany Leaves (morph)
+[x] 2.27  Update Patient model   — hasMany Vitals, hasMany LabReports,
+                                   hasMany InsuranceClaims
+
+
+================================================================================
+  PHASE 3 — SEEDERS (comprehensive realistic data)
+================================================================================
+
+[x] 3.01  Seed: Roles (admin, doctor, patient, nurse, receptionist, pharmacist)
+          + Permissions for every module + role_permissions pivot
+
+[x] 3.02  Seed: Admin user (admin@preclinic.com / password)
+          + 1 demo user per role
+
+[x] 3.03  Seed: 6 Departments (Cardiology, Pediatrics, Gynecology,
+          Orthopedics, Neurology, Dermatology)
+
+[x] 3.04  Seed: 50 Doctors — realistic names, avatars, specializations,
+          consulting fees, schedules, departments
+
+[x] 3.05  Seed: 10 Specializations + 10 Services
+
+[x] 3.06  Seed: 500 Patients — names, codes, ages, gender, blood group,
+          address, avatar
+
+[x] 3.07  Seed: 1000+ Appointments — spread across last 12 months,
+          various doctors/patients, statuses (Ongoing/Completed/
+          Rescheduled/Cancelled), appointment types
+
+[x] 3.08  Seed: 500 Payments — linked to appointments, mixed methods
+          (Cash/Card/Insurance/Online), all Paid/Pending statuses,
+          amount spread, NPR currency
+
+[x] 3.09  Seed: 200 Prescriptions — linked to appointments,
+          realistic medicines_json arrays (2-4 medicines each),
+          diagnosis, advice
+
+[x] 3.10  Seed: 2000 Vitals records — spread across 100 patients,
+          daily readings last 30 days, realistic HR/BP/SpO2/weight values,
+          statuses Normal/Monitor/Critical
+
+[x] 3.11  Seed: 20 Staff — 5 nurses, 5 receptionists, 5 pharmacists,
+          5 lab technicians — with salary, joining dates
+
+[x] 3.12  Seed: Leave Types (Casual, Sick, Annual, Maternity)
+          + 60 Leave records mixed Pending/Approved/Rejected
+
+[x] 3.13  Seed: 300 Attendance records — last 30 days for all staff+doctors
+
+[x] 3.14  Seed: 10 Holidays (next 12 months)
+
+[x] 3.15  Seed: 6 months Payroll records for all staff
+
+[x] 3.16  Seed: 100 Medicines — realistic drug names, categories, stock
+          levels, batch numbers, expiry dates (some near-expiry)
+
+[x] 3.17  Seed: 15 Suppliers
+
+[x] 3.18  Seed: 50 Purchase Orders — various medicines/suppliers/statuses
+
+[x] 3.19  Seed: 30 Stock Transfers
+
+[x] 3.20  Seed: 6 Expense Categories + 200 Expense records (last 6 months)
+
+[x] 3.21  Seed: 200 Income records (last 6 months)
+
+[x] 3.22  Seed: 150 Lab Reports — various tests, Pending/Completed
+
+[x] 3.23  Seed: 40 Clinical Notes
+
+[x] 3.24  Seed: 100 Notifications per role sample
+
+[x] 3.25  Seed: 10 Doctor Reviews per doctor sample
+
+[x] 3.26  Seed: 30 Insurance Claims
+
+[x] 3.27  Seed: 20 Assets
+
+[x] 3.28  Seed: 100 Queue tokens — today + last 7 days, mixed statuses
+          (Waiting/Serving/Completed/Skipped), priorities
+
+[x] 3.29  Seed: SaaS data — 3 Plans + 10 Clinics (extend existing seeder)
+
+[x] 3.30  Run: php artisan db:seed — verify all counts
+
+
+================================================================================
+  PHASE 4 — AUTHENTICATION API + FRONTEND WIRING
+================================================================================
+
+[x] 4.01  Install Laravel Sanctum + configure API token guards
+[x] 4.02  Add /api/v1/login     POST  → validate email/password, return token + role
+[x] 4.03  Add /api/v1/register  POST  → create user, return token
+[x] 4.04  Add /api/v1/logout    POST  → revoke Sanctum token
+[x] 4.05  Add /api/v1/forgot-password POST → send reset email/code
+[x] 4.06  Add /api/v1/reset-password  POST → verify code, update password
+[x] 4.07  Add /api/v1/me        GET   → return authenticated user profile
+
+PAGE WIRING — AUTH PAGES:
+[x] 4.08  login.html / login-basic.html / login-cover.html / login-illustration.html
+          → POST /api/v1/login, store token+role in localStorage,
+            redirect: admin→index.html, doctor→doctor-dashboard.html,
+            patient→patient-dashboard.html, nurse→nurse-dashboard.html,
+            receptionist→receptionist-dashboard.html,
+            pharmacist→pharmacist-dashboard.html
+          → Show inline error on wrong credentials
+          → Social auth buttons show "coming soon" toast
+
+[x] 4.09  register-basic.html / register-cover.html / register-illustration.html
+          → POST /api/v1/register, auto-login on success, redirect by role
+          → Inline field validation errors
+
+[x] 4.10  forgot-password-basic/cover/illustration.html
+          → POST /api/v1/forgot-password, show success toast
+
+[x] 4.11  reset-password-basic/cover/illustration.html
+          → POST /api/v1/reset-password, redirect to login on success
+
+[x] 4.12  email-verification-basic/cover/illustration.html
+          → POST /api/v1/verify-email with code input
+
+[x] 4.13  two-step-verification-basic/cover/illustration.html
+          → POST /api/v1/verify-2fa with OTP code
+
+[x] 4.14  lock-screen.html
+          → POST /api/v1/unlock with password field
+
+[x] 4.15  All protected pages: add auth guard JS at top —
+          if no token in localStorage → redirect to login.html
+
+
+================================================================================
+  PHASE 5 — ADMIN DASHBOARD (index.html)
+================================================================================
+
+API ENDPOINTS NEEDED:
+[x] 5.01  GET /api/v1/dashboard/stats
+          → doctors_count, patients_count, appointments_count,
+            revenue_total, appointment_breakdown{all/cancelled/
+            rescheduled/completed}, top_departments
+
+[x] 5.02  GET /api/v1/dashboard/appointments-chart
+          → monthly counts for last 12 months (for bar chart)
+          → response: { labels: [...months], series: [...counts] }
+
+[x] 5.03  GET /api/v1/dashboard/popular-doctors
+          → top 5 doctors by appointment count, with avatar, name,
+            specialization, appointment_count, rating
+
+[x] 5.04  GET /api/v1/dashboard/doctor-schedule-today
+          → list of today's scheduled doctors with time slots
+
+[x] 5.05  GET /api/v1/dashboard/top-patients
+          → top 5 patients by visit count, with avatar, code, visits
+
+[x] 5.06  GET /api/v1/dashboard/recent-transactions
+          → last 10 payments with patient, amount, method, status, date
+
+[x] 5.07  GET /api/v1/dashboard/leave-requests
+          → pending leave requests with employee name, type, dates, days
+
+PAGE WIRING — index.html:
+[x] 5.08  KPI stat cards → fetch /api/v1/dashboard/stats on load,
+          inject: doctors_count, patients_count, appointments_count,
+          revenue_total into DOM
+
+[x] 5.09  Appointments bar chart (ApexCharts) → fetch
+          /api/v1/dashboard/appointments-chart, render with real
+          monthly data. Chart ID: #appointment-chart or similar.
+          Show loading spinner while fetching.
+
+[x] 5.10  Appointment breakdown donut chart → use
+          appointment_breakdown from stats endpoint.
+          Render: All/Completed/Cancelled/Rescheduled segments.
+
+[x] 5.11  Top Departments pie chart → use top_departments data.
+          Render: Cardiology/Pediatrics/Gynecology with real counts.
+
+[x] 5.12  Popular Doctors list → fetch /api/v1/dashboard/popular-doctors,
+          render each row: avatar, name, specialization, count, rating stars
+
+[x] 5.13  Doctor Schedule Today widget → fetch
+          /api/v1/dashboard/doctor-schedule-today, render time + name rows
+
+[x] 5.14  Top 5 Patients list → fetch /api/v1/dashboard/top-patients,
+          render avatar, name, code, visit count
+
+[x] 5.15  Recent Transactions table → fetch
+          /api/v1/dashboard/recent-transactions, render DataTable rows
+
+[x] 5.16  Leave Requests widget → fetch /api/v1/dashboard/leave-requests,
+          render pending leave cards with Approve/Reject buttons
+          → Approve: POST /api/v1/leaves/{id}/approve
+          → Reject:  POST /api/v1/leaves/{id}/reject
+
+[x] 5.17  Clinic switcher dropdown (sidebar top) → fetch
+          GET /api/v1/clinics → populate clinic list dynamically
+
+
+================================================================================
+  PHASE 6 — DOCTOR PORTAL
+================================================================================
+
+API ENDPOINTS NEEDED:
+[x] 6.01  GET /api/v1/doctor/dashboard
+          → today_appointments_count, completed_consultations,
+            total_patients, online_consultations, cancelled_count,
+            appointments_bar_chart{labels,series},
+            availability_schedule[], top_patients[], upcoming_appointment{}
+
+[x] 6.02  GET /api/v1/doctor/appointments
+          → paginated list with patient name/avatar, date, time,
+            type, status, fee. Filters: status, date range, doctor_id
+
+[x] 6.03  GET /api/v1/doctor/appointments/{id}
+          → full detail with patient info, notes, prescription
+
+[x] 6.04  POST /api/v1/doctor/appointments
+          → create appointment (patient_id, doctor_id, date, slot, type)
+
+[x] 6.05  PUT  /api/v1/doctor/appointments/{id}
+          → update status / reschedule
+
+[x] 6.06  GET /api/v1/doctor/schedules
+          → weekly availability, time slots per doctor
+
+[x] 6.07  PUT /api/v1/doctor/schedules
+          → update doctor availability slots
+
+[x] 6.08  GET /api/v1/doctor/prescriptions
+          → list with patient name, diagnosis, date, medicines count
+
+[x] 6.09  GET /api/v1/doctor/prescriptions/{id}  → full detail
+[x] 6.10  POST /api/v1/doctor/prescriptions       → create prescription
+[x] 6.11  GET /api/v1/doctor/patients             → doctor's patient list
+[x] 6.12  GET /api/v1/doctor/patients/{id}        → patient detail + history
+[x] 6.13  GET /api/v1/doctor/reviews              → doctor's review list
+[x] 6.14  GET /api/v1/doctor/leaves               → doctor's leave list
+[x] 6.15  POST /api/v1/doctor/leaves              → apply for leave
+
+PAGE WIRING — DOCTOR PAGES:
+[x] 6.16  doctor-dashboard.html
+          → KPI cards: fetch /api/v1/doctor/dashboard
+            inject: today_appointments_count, completed_consultations,
+            total_patients, cancelled_count
+          → Appointments bar chart (ApexCharts) — monthly breakdown,
+            render with appointments_bar_chart data
+          → Appointment donut chart — by type/status
+          → Upcoming appointment card — next appointment from list
+          → Availability schedule widget — today's slots
+          → Top Patients list — avatar, name, visits
+          → Offcanvas "New Appointment" form → POST /api/v1/doctor/appointments
+          → Offcanvas "Edit Appointment" form → PUT /api/v1/doctor/appointments/{id}
+
+[x] 6.17  doctors-appointments.html
+          → DataTable → fetch GET /api/v1/doctor/appointments
+          → Filters: status dropdown, date range picker
+          → Row actions: View Details, Cancel, Reschedule
+          → "New Appointment" button → offcanvas POST form
+
+[x] 6.18  doctors-appointment-requests.html
+          → Pending requests list → fetch with status=Pending filter
+          → Accept / Decline buttons → PUT status update
+
+[x] 6.19  doctors-appointment-details.html
+          → fetch GET /api/v1/doctor/appointments/{id}
+          → Show patient info, appointment details, prescription panel
+          → "Add Prescription" offcanvas → POST /api/v1/doctor/prescriptions
+
+[x] 6.20  online-consultations.html / appointment-consultations.html
+          → fetch appointments with type=Online filter
+
+[x] 6.21  doctors-schedules.html / doctor-schedule.html / doctors-schedule.html
+          → fetch GET /api/v1/doctor/schedules
+          → Weekly calendar grid with time slots
+          → Update slots form → PUT /api/v1/doctor/schedules
+
+[x] 6.22  doctors-prescriptions.html
+          → DataTable → fetch GET /api/v1/doctor/prescriptions
+          → "New Prescription" offcanvas form
+
+[x] 6.23  doctors-prescription-details.html
+          → fetch GET /api/v1/doctor/prescriptions/{id}
+          → render medicines list, diagnosis, advice, print button
+
+[x] 6.24  doctors-patient-details.html
+          → fetch GET /api/v1/doctor/patients/{id}
+          → Show visit history, vitals summary, prescriptions
+
+[x] 6.25  doctors-reviews.html
+          → DataTable → fetch GET /api/v1/doctor/reviews
+          → Star rating display, patient name, review text, date
+
+[x] 6.26  doctors-leaves.html
+          → DataTable → fetch GET /api/v1/doctor/leaves
+          → "Apply Leave" offcanvas form → POST /api/v1/doctor/leaves
+          → Status badges: Pending/Approved/Rejected
+
+[x] 6.27  doctors-notifications.html → fetch GET /api/v1/notifications
+          → Mark as read: POST /api/v1/notifications/{id}/read
+
+[x] 6.28  doctors-profile-settings.html → fetch GET /api/v1/doctor/profile
+          → Save: PUT /api/v1/doctor/profile (name, phone, bio, avatar upload)
+
+[x] 6.29  doctors-password-settings.html
+          → POST /api/v1/auth/change-password
+
+[x] 6.30  doctors-notification-settings.html
+          → GET/PUT /api/v1/doctor/notification-preferences
+
+
+================================================================================
+  PHASE 7 — PATIENT PORTAL
+================================================================================
+
+API ENDPOINTS NEEDED:
+[x] 7.01  GET /api/v1/patient/dashboard
+          → upcoming_count, prescriptions_count, total_billed,
+            doctors_count, vitals_latest{}, appointments[],
+            prescriptions[], recent_payments[],
+            consultation_by_dept_chart{labels,series}
+
+[x] 7.02  GET /api/v1/patient/appointments  → paginated, filter by status
+[x] 7.03  POST /api/v1/patient/appointments → book appointment
+[x] 7.04  GET /api/v1/patient/appointments/{id}  → detail
+[x] 7.05  GET /api/v1/patient/doctors            → all doctors list
+[x] 7.06  GET /api/v1/patient/doctors/{id}       → doctor detail + reviews
+[x] 7.07  GET /api/v1/patient/prescriptions      → list
+[x] 7.08  GET /api/v1/patient/prescriptions/{id} → detail with medicines
+[x] 7.09  GET /api/v1/patient/invoices           → invoice list
+[x] 7.10  GET /api/v1/patient/invoices/{id}      → invoice detail
+[x] 7.11  GET /api/v1/patient/vitals             → full vitals history paginated
+[x] 7.12  POST /api/v1/patient/vitals            → log new vitals
+[x] 7.13  GET /api/v1/patient/vitals/chart
+          → HR + BP trend for last 30 days {dates[], heart_rate[], systolic[]}
+[x] 7.14  GET /api/v1/patient/vitals/weekly-avg
+          → this week's average per metric (for radial chart)
+[x] 7.15  GET /api/v1/patient/health-reports     → lab reports list
+[x] 7.16  GET /api/v1/patient/notifications      → notifications list
+
+PAGE WIRING — PATIENT PAGES:
+[x] 7.17  patient-dashboard.html
+          → KPI cards → /api/v1/patient/dashboard:
+            upcoming_count, prescriptions_count, total_billed, doctors_count
+          → Blood Pressure mini-chart (sparkline ApexCharts) → vitals history
+          → Heart Rate mini-chart (sparkline) → vitals history
+          → Consultation By Dept donut chart → consultation_by_dept_chart
+          → My Doctors list → doctors[] with avatar, name, specialty
+          → Prescriptions list → prescriptions[] last 3
+          → Vitals panel (Weight/Height/BMI/Pulse/SpO2/Temp)
+            → vitals_latest from dashboard endpoint
+          → Recent Transactions table → recent_payments[]
+
+[x] 7.18  patient-appointments.html
+          → DataTable → GET /api/v1/patient/appointments
+          → Status filter tabs (All / Upcoming / Completed / Cancelled)
+          → "Book Appointment" offcanvas → POST
+
+[x] 7.19  patient-appointment.html / patient-appointment-details.html
+          → GET /api/v1/patient/appointments/{id}
+          → Show doctor, date/time, type, status, fee, notes
+
+[x] 7.20  patient-doctors.html
+          → Card grid → GET /api/v1/patient/doctors
+          → Search/filter by specialization
+          → "Book Appointment" button per card
+
+[x] 7.21  patients-doctor-details.html
+          → GET /api/v1/patient/doctors/{id}
+          → Show profile, reviews, available slots
+          → Book appointment form
+
+[x] 7.22  patient-prescriptions.html
+          → DataTable → GET /api/v1/patient/prescriptions
+
+[x] 7.23  patient-prescription-details.html
+          → GET /api/v1/patient/prescriptions/{id}
+          → Render medicines table, diagnosis, advice, download PDF button
+
+[x] 7.24  patient-invoices.html
+          → DataTable → GET /api/v1/patient/invoices
+
+[x] 7.25  patient-invoice-details.html
+          → GET /api/v1/patient/invoices/{id}
+          → Render invoice: patient, doctor, services, total, payment status
+
+[x] 7.26  patient-vitals-dashboard.html
+          → KPI cards (Heart Rate, Blood Pressure, Oxygen, Weight)
+            → latest from GET /api/v1/patient/vitals (first record)
+          → Heart Rate + Systolic BP Trend chart (ApexCharts line)
+            → GET /api/v1/patient/vitals/chart
+          → Weekly Average radial chart
+            → GET /api/v1/patient/vitals/weekly-avg
+          → Vitals Log History DataTable → GET /api/v1/patient/vitals
+          → "Log Vitals" offcanvas form → POST /api/v1/patient/vitals
+            (Heart Rate, SpO2, Systolic BP, Diastolic BP, Weight fields)
+
+[x] 7.27  patient-health-reports.html
+          → DataTable → GET /api/v1/patient/health-reports
+
+[x] 7.28  heart-rate.html (patient context)
+          → ApexCharts line chart → last 30 days heart rate readings
+          → Table of recent heart rate logs with status badges
+
+[x] 7.29  blood-pressure.html (patient context)
+          → ApexCharts area chart → systolic/diastolic trend
+          → Table of recent BP logs
+
+[x] 7.30  oxygen-level.html (patient context)
+          → ApexCharts line → SpO2 trend
+          → Table of SpO2 readings
+
+[x] 7.31  patient-ai-assistant.html / patient-ai-suggestions.html
+          → POST /api/v1/ai/chat { message } → return AI text response
+          → Render chat bubbles dynamically
+
+[x] 7.32  patient-risk-prediction.html
+          → POST /api/v1/ai/risk-prediction { patient_id }
+          → Render risk score gauge chart (ApexCharts radial)
+          → Risk factors list
+
+[x] 7.33  patient-notifications.html → GET /api/v1/patient/notifications
+[x] 7.34  patient-notifications-settings.html → GET/PUT preferences
+[x] 7.35  patient-profile-settings.html → GET/PUT /api/v1/patient/profile
+[x] 7.36  patient-password-settings.html → POST change-password
+
+
+================================================================================
+  PHASE 8 — NURSE PORTAL
+================================================================================
+
+API ENDPOINTS NEEDED:
+[x] 8.01  GET /api/v1/nurse/dashboard
+          → patients_under_care, critical_alerts_count,
+            medications_due, vitals_recorded_today,
+            live_vitals_table[],  medication_schedule[],
+            ward_occupancy_chart{labels,series},
+            vitals_trend_chart{dates[],heart_rate[],oxygen[]},
+            weekly_ward_activity_chart{labels,series},
+            shift_handover_notes[]
+
+[x] 8.02  GET /api/v1/nurse/patients     → assigned patients list
+[x] 8.03  GET /api/v1/nurse/vitals       → all vitals for assigned patients
+[x] 8.04  POST /api/v1/nurse/vitals      → log vitals for a patient
+[x] 8.05  GET /api/v1/nurse/clinical-notes      → list
+[x] 8.06  POST /api/v1/nurse/clinical-notes     → create new note
+[x] 8.07  GET /api/v1/nurse/critical-alerts     → critical patients list
+[x] 8.08  GET /api/v1/nurse/queue        → live queue for nurse view
+
+PAGE WIRING — NURSE PAGES:
+[x] 8.09  nurse-dashboard.html
+          → KPI cards (Patients Under Care, Critical Alerts,
+            Medications Due, Vitals Recorded) → dashboard endpoint
+          → Vitals Trend line chart (ApexCharts) → vitals_trend_chart
+          → Ward Occupancy bar chart → ward_occupancy_chart
+          → Live Patient Vitals DataTable → live_vitals_table
+            (Name, HR, BP, SpO2, Temp, Status badge: Critical/Stable/Monitor)
+          → Medication Schedule widget → medication_schedule[]
+          → Weekly Ward Activity chart → weekly_ward_activity_chart
+          → Shift Handover Notes → shift_handover_notes[]
+
+[x] 8.10  nurses-queue-live.html
+          → DataTable → GET /api/v1/nurse/queue
+          → Token, Patient, Status badges
+
+[x] 8.11  nurses-patients.html
+          → DataTable → GET /api/v1/nurse/patients
+
+[x] 8.12  heart-rate.html (nurse context)
+          → ApexCharts line chart + table (same as patient context)
+
+[x] 8.13  blood-pressure.html / oxygen-level.html (nurse context)
+          → Same chart + table pattern
+
+[x] 8.14  clinical-notes.html
+          → DataTable → GET /api/v1/nurse/clinical-notes
+          → "Add Note" form → POST /api/v1/nurse/clinical-notes
+          → Note types: General, Shift Handover, Critical
+
+[x] 8.15  critical-alerts.html
+          → DataTable → GET /api/v1/nurse/critical-alerts
+          → Patient name, condition, alert type, time, severity badge
+
+[x] 8.16  nurses-messages.html → shared messages API
+[x] 8.17  nurses-profile-settings.html → GET/PUT nurse profile
+[x] 8.18  nurses-password-settings.html → POST change-password
+[x] 8.19  nurses-patient-care-preferences.html → GET/PUT preferences
+[x] 8.20  nurses-notes-preferences.html → GET/PUT preferences
+[x] 8.21  nurses-shift-task-preferences.html → GET/PUT preferences
+[x] 8.22  nurses-notification-settings.html → GET/PUT preferences
+[x] 8.23  nurses-security-settings.html → GET/PUT security settings
+[x] 8.24  nurses-privacy-policy.html → static content API or static HTML
+
+
+================================================================================
+  PHASE 9 — RECEPTIONIST PORTAL
+================================================================================
+
+API ENDPOINTS NEEDED:
+[x] 9.01  GET /api/v1/receptionist/dashboard
+          → today_appointments, checked_in_count, queue_count,
+            pending_requests, daily_footfall_chart{labels,series},
+            appointments_by_channel_chart{labels,series},
+            payment_collection_chart{labels,series},
+            today_appointments_table[], appointment_requests[]
+
+[x] 9.02  GET /api/v1/receptionist/appointments  → paginated list
+[x] 9.03  POST /api/v1/receptionist/appointments → new appointment booking
+[x] 9.04  GET /api/v1/receptionist/patients      → patient list
+[x] 9.05  POST /api/v1/receptionist/patients     → register new patient
+[x] 9.06  GET /api/v1/receptionist/queue         → live queue tokens
+[x] 9.07  POST /api/v1/receptionist/queue/token  → generate token
+[x] 9.08  GET /api/v1/receptionist/payments      → payments list
+
+PAGE WIRING — RECEPTIONIST PAGES:
+[x] 9.09  receptionist-dashboard.html
+          → KPI cards → dashboard endpoint
+          → Daily Footfall bar chart (ApexCharts) → daily_footfall_chart
+          → Appointments by Channel donut chart → by_channel_chart
+            (Walk-in / Online / Phone / Referral segments)
+          → Payment Collection donut → Cash/Card/Insurance
+          → Today's Appointments DataTable → today_appointments_table
+          → Live Queue card sidebar → queue_count + next token
+          → Appointment Requests panel → appointment_requests[]
+            Accept/Decline buttons → PUT status update
+
+[x] 9.10  receptionist-appointments.html
+          → DataTable → GET /api/v1/receptionist/appointments
+          → Filters: date, status, doctor
+
+[x] 9.11  receptionist-new-appointment.html
+          → Form → POST /api/v1/receptionist/appointments
+          → Patient search dropdown (Select2) → GET /api/v1/patients?q=
+          → Doctor dropdown → GET /api/v1/doctors
+          → Available slots → GET /api/v1/doctors/{id}/slots?date=
+
+[x] 9.12  receptionist-appointment-calendar.html
+          → FullCalendar / ApexCharts timeline
+          → GET /api/v1/receptionist/appointments → map to calendar events
+
+[x] 9.13  receptionist-appointment-requests.html
+          → DataTable → pending requests, Accept/Decline actions
+
+[x] 9.14  receptionist-patients.html
+          → DataTable → GET /api/v1/receptionist/patients
+
+[x] 9.15  receptionist-create-patient.html
+          → Form → POST /api/v1/receptionist/patients
+
+[x] 9.16  receptionist-payments.html
+          → DataTable → GET /api/v1/receptionist/payments
+          → Payment method badges, amount, status
+
+[x] 9.17  receptionist-queue-live.html
+          → DataTable → GET /api/v1/receptionist/queue
+          → Token, Patient, Doctor, Status, Priority
+
+[x] 9.18  receptionist-queue-generate-token.html
+          → Form → POST /api/v1/receptionist/queue/token
+          → Patient search, doctor select, priority select
+          → Show generated token card after success
+
+[x] 9.19  receptionist-queue-waiting-list.html
+          → DataTable → Waiting/Next status queue entries
+
+[x] 9.20  receptionist-messages.html → shared messages API
+[x] 9.21  receptionist-profile-settings.html → GET/PUT profile
+[x] 9.22  receptionist-password-settings.html → POST change-password
+[x] 9.23  receptionist-appointment-preferences.html → GET/PUT prefs
+[x] 9.24  receptionist-registration-preferences.html → GET/PUT prefs
+[x] 9.25  receptionist-queue-preferences.html → GET/PUT prefs
+[x] 9.26  receptionist-printer-settings.html → GET/PUT printer config
+[x] 9.27  receptionist-notification-settings.html → GET/PUT prefs
+[x] 9.28  receptionist-security-settings.html → GET/PUT security
+
+
+================================================================================
+  PHASE 10 — PHARMACIST PORTAL
+================================================================================
+
+API ENDPOINTS NEEDED:
+[x] 10.01 GET /api/v1/pharmacist/dashboard
+          → total_medicines, pending_orders, low_stock_count,
+            expiring_soon_count, medicine_sales_trend{labels,series},
+            stock_by_category_chart{labels,series},
+            recent_prescriptions[], expiry_alerts[],
+            low_stock_medicines[], top_selling_medicines[],
+            suppliers_overview[]
+
+[x] 10.02 GET /api/v1/pharmacist/medicines       → paginated + search
+[x] 10.03 POST /api/v1/pharmacist/medicines      → add medicine
+[x] 10.04 PUT  /api/v1/pharmacist/medicines/{id} → update stock/details
+[x] 10.05 GET /api/v1/pharmacist/inventory/stock         → stock list
+[x] 10.06 GET /api/v1/pharmacist/inventory/expiry-alerts → near-expiry list
+[x] 10.07 GET /api/v1/pharmacist/suppliers               → supplier list
+[x] 10.08 POST /api/v1/pharmacist/suppliers              → add supplier
+[x] 10.09 GET /api/v1/pharmacist/purchase-orders         → PO list
+[x] 10.10 POST /api/v1/pharmacist/purchase-orders        → create PO
+[x] 10.11 PUT  /api/v1/pharmacist/purchase-orders/{id}   → update status
+[x] 10.12 GET /api/v1/pharmacist/transfers               → stock transfers
+[x] 10.13 POST /api/v1/pharmacist/transfers              → create transfer
+[x] 10.14 GET /api/v1/pharmacist/orders                  → dispensed orders
+
+PAGE WIRING — PHARMACIST PAGES:
+[x] 10.15 pharmacist-dashboard.html
+          → KPI cards: total_medicines, pending_orders,
+            low_stock_count, expiring_soon_count
+          → Medicine Sales Trend line chart (ApexCharts)
+            → medicine_sales_trend{labels,series}
+          → Stock by Category donut chart
+            → stock_by_category_chart{labels,series}
+          → Recent Prescriptions DataTable → recent_prescriptions[]
+            (Patient, Medicine Count, Doctor, Status: Pending/Dispensed/
+            Out of Stock) — "Dispense" action → PUT status
+          → Expiry Alerts widget → expiry_alerts[]
+            (Medicine, Batch, Expiry, Days Remaining — color coded)
+          → Low Stock Medicines table → low_stock_medicines[]
+          → Top Selling Medicines progress bars → top_selling_medicines[]
+          → Suppliers Overview table → suppliers_overview[]
+
+[x] 10.16 pharmacist-medicines.html
+          → DataTable → GET /api/v1/pharmacist/medicines
+          → "Add Medicine" offcanvas → POST
+          → Edit inline → PUT
+          → Category filter, search
+
+[x] 10.17 pharmacist-stock-management.html
+          → DataTable → GET /api/v1/pharmacist/inventory/stock
+          → Stock level badges (In Stock / Low / Out of Stock)
+          → Adjust stock offcanvas form
+
+[x] 10.18 pharmacist-expiry-alerts.html
+          → DataTable → GET /api/v1/pharmacist/inventory/expiry-alerts
+          → Color-coded days remaining (red <30, orange <90, green >90)
+
+[x] 10.19 pharmacist-suppliers.html
+          → DataTable → GET /api/v1/pharmacist/suppliers
+          → "Add Supplier" form → POST
+
+[x] 10.20 pharmacist-purchase-orders.html
+          → DataTable → GET /api/v1/pharmacist/purchase-orders
+          → "New PO" form → POST
+          → Status update buttons → PUT
+
+[x] 10.21 pharmacist-transfers.html
+          → DataTable → GET /api/v1/pharmacist/transfers
+          → "New Transfer" form → POST
+
+[x] 10.22 order-history.html
+          → DataTable → GET /api/v1/pharmacist/orders
+
+[x] 10.23 pharmacist-messages.html → shared messages API
+[x] 10.24 pharmacist-profile-settings.html → GET/PUT profile
+[x] 10.25 pharmacist-password-settings.html → POST change-password
+[x] 10.26 pharmacist-prescription-preferences.html → GET/PUT prefs
+[x] 10.27 pharmacist-inventory-preferences.html → GET/PUT prefs
+[x] 10.28 pharmacist-printer-settings.html → GET/PUT printer config
+[x] 10.29 pharmacist-notification-settings.html → GET/PUT prefs
+[x] 10.30 pharmacist-security-settings.html → GET/PUT security
+
+
+================================================================================
+  PHASE 11 — ADMIN: CLINIC OPERATIONS (Doctors / Patients / Appointments)
+================================================================================
+
+API ENDPOINTS NEEDED:
+[x] 11.01 GET  /api/v1/doctors          → paginated, filter by dept/status
+[x] 11.02 GET  /api/v1/doctors/{id}     → full profile + appointment history
+[x] 11.03 POST /api/v1/doctors          → create doctor
+[x] 11.04 PUT  /api/v1/doctors/{id}     → update doctor
+[x] 11.05 DELETE /api/v1/doctors/{id}   → soft delete
+
+[x] 11.06 GET  /api/v1/patients         → paginated, filter/search
+[x] 11.07 GET  /api/v1/patients/{id}    → full record + appointments + vitals
+[x] 11.08 POST /api/v1/patients         → create patient
+[x] 11.09 PUT  /api/v1/patients/{id}    → update patient
+[x] 11.10 DELETE /api/v1/patients/{id}  → soft delete
+
+[x] 11.11 GET  /api/v1/appointments     → paginated, filter: status/doctor/date
+[x] 11.12 GET  /api/v1/appointments/{id}
+[x] 11.13 POST /api/v1/appointments
+[x] 11.14 PUT  /api/v1/appointments/{id}
+[x] 11.15 DELETE /api/v1/appointments/{id}
+
+[x] 11.16 GET  /api/v1/doctors/{id}/slots?date=YYYY-MM-DD
+          → available time slots for booking
+
+[x] 11.17 GET /api/v1/locations  / POST / PUT / DELETE
+[x] 11.18 GET /api/v1/services   / POST / PUT / DELETE
+[x] 11.19 GET /api/v1/specializations / POST / PUT / DELETE
+[x] 11.20 GET /api/v1/assets     / POST / PUT / DELETE
+[x] 11.21 GET /api/v1/activities (audit log)
+
+PAGE WIRING:
+[x] 11.22 doctors.html (Doctors Grid)
+          → Card grid → GET /api/v1/doctors
+          → Search/filter by dept, status, specialization
+          → Add Doctor button → offcanvas form → POST
+          → Per card: View Profile, Edit, Deactivate actions
+
+[x] 11.23 doctor-details.html
+          → GET /api/v1/doctors/{id}
+          → Profile header: avatar, name, specialization, rating, fee
+          → Appointment history DataTable
+          → Available schedule widget
+
+[x] 11.24 add-doctor.html
+          → Form → POST /api/v1/doctors
+          → Department dropdown → GET /api/v1/departments
+          → Specialization dropdown → GET /api/v1/specializations
+          → Avatar upload field
+
+[x] 11.25 edit-doctor.html
+          → Pre-fill form → GET /api/v1/doctors/{id}
+          → Save → PUT /api/v1/doctors/{id}
+
+[x] 11.26 patients.html
+          → DataTable → GET /api/v1/patients
+          → Search, gender filter, date range filter
+          → Add Patient button → offcanvas → POST
+          → Per row: View, Edit, Delete actions
+
+[x] 11.27 patients-grid.html
+          → Card grid view of same patients data
+
+[x] 11.28 patient-details.html (admin view)
+          → GET /api/v1/patients/{id}
+          → Tabs: Overview, Appointments, Vitals, Prescriptions, Invoices
+
+[x] 11.29 create-patient.html → Form → POST /api/v1/patients
+[x] 11.30 edit-patient.html
+          → Pre-fill → GET, Save → PUT /api/v1/patients/{id}
+
+[x] 11.31 appointments.html
+          → DataTable → GET /api/v1/appointments (with patient, doctor names)
+          → Status filter tabs
+          → Date range filter
+          → Export button → GET with export=csv param
+
+[x] 11.32 new-appointment.html
+          → Full booking form → POST /api/v1/appointments
+          → Patient search (Select2 AJAX)
+          → Doctor search (Select2 AJAX)
+          → Slot picker → GET /api/v1/doctors/{id}/slots
+
+[x] 11.33 appointment-calendar.html
+          → Fetch all appointments → render as FullCalendar events
+          → Click event → show detail modal
+
+[x] 11.34 appointment-kanban.html
+          → Drag-and-drop columns: Pending / Ongoing / Completed / Cancelled
+          → Fetch appointments by status → render cards
+          → Drag to new column → PUT status update
+
+[x] 11.35 appointment-requests.html
+          → DataTable → status=Pending filter
+          → Accept / Decline / Reschedule actions
+
+[x] 11.36 locations.html / services.html / specializations.html
+          → DataTable CRUD for each → GET list, Add form, Edit, Delete
+
+[x] 11.37 assets.html
+          → DataTable → GET /api/v1/assets
+          → Add Asset form, Edit, Status update
+
+[x] 11.38 activities.html
+          → Audit log DataTable → GET /api/v1/activities
+
+
+================================================================================
+  PHASE 12 — QUEUE MANAGEMENT MODULE
+================================================================================
+
+API ENDPOINTS NEEDED:
+[x] 12.01 GET  /api/v1/queues
+          → current_token, waiting_count, in_consultation_count,
+            served_today, avg_wait_minutes,
+            tokens[] with token_number, patient, doctor, priority,
+            status, called_at
+
+[x] 12.02 POST /api/v1/queues/token
+          → patient_id, doctor_id, priority → return new token
+
+[x] 12.03 PUT  /api/v1/queues/{id}/status
+          → status: Waiting/Serving/Completed/Skipped
+
+[x] 12.04 GET  /api/v1/queues/waiting-list  → Waiting status only
+[x] 12.05 GET  /api/v1/queues/analytics
+          → hourly_distribution{labels,series},
+            avg_wait_by_hour, daily_served_chart{labels,series},
+            peak_hours, doctor_load{doctor,count}[]
+
+[x] 12.06 GET  /api/v1/queues/display
+          → now_serving token, next_tokens[], called_tokens[]
+            (for public token display board)
+
+[x] 12.07 GET/PUT /api/v1/settings/queue/token-prefix
+[x] 12.08 GET/PUT /api/v1/settings/queue/max-limit
+[x] 12.09 GET/PUT /api/v1/settings/queue/auto-assign-rules
+
+PAGE WIRING:
+[x] 12.10 queue-live.html
+          → Stats bar: Waiting/In-Consultation/Served/Avg Wait
+            → GET /api/v1/queues → inject counts
+          → DataTable → tokens[] with patient, doctor,
+            priority badge (Normal/Urgent/Emergency),
+            status badge, called_at time
+          → "Generate Token" button → POST /api/v1/queues/token
+          → "Display Board" button → link to queue-token-display.html
+          → Offcanvas token details → click row → show patient info
+            + status change dropdown → PUT /api/v1/queues/{id}/status
+          → Auto-refresh every 15 seconds
+
+[x] 12.11 queue-generate-token.html
+          → Form: patient search (Select2), doctor, priority
+          → POST /api/v1/queues/token
+          → On success: show token card (token number, patient, doctor)
+            with print button
+
+[x] 12.12 queue-token-display.html (Public Board)
+          → "NOW SERVING" large display → current token from
+            GET /api/v1/queues/display
+          → Next Tokens list
+          → Recently Called list
+          → Auto-refresh every 5 seconds
+          → Full-screen button
+
+[x] 12.13 queue-waiting-list.html
+          → DataTable → GET /api/v1/queues/waiting-list
+          → Token, Patient, Doctor, Estimated Wait time
+          → Call Next button → PUT first Waiting token to Serving
+
+[x] 12.14 queue-analytics.html
+          → Hourly Distribution bar chart (ApexCharts)
+            → analytics.hourly_distribution
+          → Daily Served line chart → analytics.daily_served_chart
+          → Doctor Load bar chart → analytics.doctor_load
+          → Peak Hours highlight cards
+          → Avg Wait by Hour line chart
+
+[x] 12.15 queue-token-prefix-settings.html → GET/PUT prefix config
+[x] 12.16 queue-max-que-limit-settings.html → GET/PUT max limit
+[x] 12.17 queue-auto-assign-rules-settings.html → GET/PUT rules
+
+
+================================================================================
+  PHASE 13 — CLINICAL SYSTEM (Lab, Radiology, Clinical Notes, Alerts)
+================================================================================
+
+API ENDPOINTS NEEDED:
+[x] 13.01 GET  /api/v1/lab/tests       → paginated, filter by status/patient
+[x] 13.02 POST /api/v1/lab/tests       → order new lab test
+[x] 13.03 GET  /api/v1/lab/reports     → completed lab reports list
+[x] 13.04 GET  /api/v1/lab/reports/{id}→ report detail
+[x] 13.05 POST /api/v1/lab/reports/upload → file upload for lab report
+[x] 13.06 GET  /api/v1/lab/imaging     → radiology/imaging records
+
+PAGE WIRING:
+[x] 13.07 lab-tests.html
+          → DataTable → GET /api/v1/lab/tests
+          → Columns: Patient, Test Name, Category, Date, Status badge
+          → "Order Test" offcanvas → POST /api/v1/lab/tests
+          → Patient search (Select2 AJAX)
+
+[x] 13.08 lab-reports.html
+          → DataTable → GET /api/v1/lab/reports
+          → View report, Download PDF, Print actions
+
+[x] 13.09 upload-reports.html
+          → File upload form → POST /api/v1/lab/reports/upload
+          → Patient ID, test_name, date, file field
+          → Progress bar during upload
+          → Success/error toast
+
+[x] 13.10 imaging-radiology.html
+          → DataTable → GET /api/v1/lab/imaging
+          → Image/scan records with patient, type, date, doctor
+
+[x] 13.11 clinical-notes.html
+          → DataTable → GET /api/v1/nurse/clinical-notes
+          → Type filter: General / Shift Handover / Critical
+          → "Add Note" offcanvas → POST
+          → Patient search (Select2)
+
+[x] 13.12 critical-alerts.html
+          → DataTable → GET /api/v1/nurse/critical-alerts
+          → Auto-refresh every 30 seconds
+          → Severity badge, patient name, condition, time
+          → Acknowledge button → PUT alert.acknowledged=true
+
+
+================================================================================
+  PHASE 14 — AI & AUTOMATION MODULE
+================================================================================
+
+API ENDPOINTS NEEDED:
+[x] 14.01 POST /api/v1/ai/chat
+          → message, context? → return { reply, suggestions[] }
+
+[x] 14.02 POST /api/v1/ai/smart-diagnosis
+          → patient_id, chief_complaint, symptoms[], vitals{},
+            medical_history → return {
+              differentials[{disease, confidence, description}],
+              recommended_tests[], urgency_level
+            }
+
+[x] 14.03 GET  /api/v1/ai/diagnosis-sessions
+          → recent AI diagnosis sessions list with status
+
+[x] 14.04 GET  /api/v1/ai/model-accuracy-chart
+          → { labels[months], accuracy_series[], precision_series[] }
+
+[x] 14.05 POST /api/v1/ai/risk-prediction
+          → patient_id → { risk_score, risk_level, risk_factors[] }
+
+[x] 14.06 POST /api/v1/ai/auto-schedule
+          → doctor_id, date_range → return suggested schedule slots
+
+[x] 14.07 POST /api/v1/ai/voice-notes
+          → audio file upload → return { transcript, structured_note }
+
+PAGE WIRING:
+[x] 14.08 ai-assistant.html
+          → Chat interface → POST /api/v1/ai/chat on send
+          → Render user bubble + AI response bubble
+          → Loading typing indicator while waiting
+          → Suggested prompts as quick-action badges
+
+[x] 14.09 smart-diagnosis.html
+          → Left panel form:
+            Patient selector (Select2) → GET /api/v1/patients?q=
+            Chief complaint textarea
+            Symptoms badge input (add/remove symptom tags)
+            Vitals inputs: HR, BP, Temp, Weight
+            Medical history checkboxes
+            "Run AI Analysis" button → POST /api/v1/ai/smart-diagnosis
+          → Right panel (results, hidden until API returns):
+            Differential diagnoses list with confidence % + progress bars
+            Recommended tests list
+            Urgency badge
+            Clinical disclaimer text
+          → Model Accuracy Trend chart (ApexCharts line, two series)
+            → GET /api/v1/ai/model-accuracy-chart
+          → Recent AI Diagnosis Sessions DataTable
+            → GET /api/v1/ai/diagnosis-sessions
+            (Patient, Complaint, Result, Status: Confirmed/Pending/Dismissed)
+
+[x] 14.10 patient-risk-prediction.html
+          → Patient selector → POST /api/v1/ai/risk-prediction
+          → Risk Score gauge chart (ApexCharts radialBar)
+          → Risk Level badge (Low/Moderate/High/Critical)
+          → Risk Factors breakdown list
+
+[x] 14.11 auto-scheduling.html
+          → Doctor select + date range
+          → POST /api/v1/ai/auto-schedule
+          → Render suggested schedule as calendar/table
+          → Confirm slots button → POST /api/v1/doctor/schedules
+
+[x] 14.12 voice-notes.html
+          → Record button (MediaRecorder API)
+          → Upload audio → POST /api/v1/ai/voice-notes
+          → Show transcript + structured clinical note
+          → Save note → POST /api/v1/nurse/clinical-notes
+
+
+================================================================================
+  PHASE 15 — PHARMACY & INVENTORY (ADMIN VIEW)
+================================================================================
+
+API ENDPOINTS NEEDED:
+[x] 15.01 GET  /api/v1/medicines            → paginated + search + category filter
+[x] 15.02 POST /api/v1/medicines            → add medicine
+[x] 15.03 PUT  /api/v1/medicines/{id}       → update
+[x] 15.04 DELETE /api/v1/medicines/{id}     → delete
+[x] 15.05 GET  /api/v1/inventory/stock      → all stock levels
+[x] 15.06 GET  /api/v1/inventory/expiry-alerts → medicines expiring < 90 days
+[x] 15.07 GET  /api/v1/suppliers            → list
+[x] 15.08 POST /api/v1/suppliers
+[x] 15.09 PUT  /api/v1/suppliers/{id}
+[x] 15.10 GET  /api/v1/purchase-orders      → paginated
+[x] 15.11 POST /api/v1/purchase-orders
+[x] 15.12 PUT  /api/v1/purchase-orders/{id}
+[x] 15.13 GET  /api/v1/stock-transfers
+[x] 15.14 POST /api/v1/stock-transfers
+
+PAGE WIRING:
+[x] 15.15 medicines.html (admin view)
+          → DataTable → GET /api/v1/medicines
+          → Category filter, search, stock status filter
+          → Add/Edit offcanvas → POST/PUT
+          → Stock level badge: In Stock / Low / Out of Stock
+
+[x] 15.16 stock-management.html (admin view)
+          → DataTable → GET /api/v1/inventory/stock
+          → Adjust stock form → PUT /api/v1/medicines/{id}
+
+[x] 15.17 expiry-alerts.html (admin view)
+          → DataTable → GET /api/v1/inventory/expiry-alerts
+          → Days remaining color coding
+
+[x] 15.18 suppliers.html (admin view)
+          → DataTable → GET /api/v1/suppliers
+          → Add/Edit/Delete CRUD
+
+[x] 15.19 purchase-orders.html (admin view)
+          → DataTable → GET /api/v1/purchase-orders
+          → New PO form → POST
+          → Status update dropdown → PUT
+
+[x] 15.20 transfers.html (admin view)
+          → DataTable → GET /api/v1/stock-transfers
+          → New Transfer form → POST
+
+
+================================================================================
+  PHASE 16 — HRM MODULE
+================================================================================
+
+API ENDPOINTS NEEDED:
+[x] 16.01 GET  /api/v1/staff               → paginated, filter by role/dept
+[x] 16.02 POST /api/v1/staff               → add staff
+[x] 16.03 PUT  /api/v1/staff/{id}          → update
+[x] 16.04 DELETE /api/v1/staff/{id}
+
+[x] 16.05 GET  /api/v1/departments         → list
+[x] 16.06 POST /api/v1/departments
+[x] 16.07 PUT  /api/v1/departments/{id}
+[x] 16.08 DELETE /api/v1/departments/{id}
+
+[x] 16.09 GET  /api/v1/designations        → list of job titles
+[x] 16.10 POST /api/v1/designations / PUT / DELETE
+
+[x] 16.11 GET  /api/v1/attendance
+          → filter: date, department, staff_id
+          → returns: date, staff name, check_in, check_out, status
+
+[x] 16.12 POST /api/v1/attendance          → mark attendance
+[x] 16.13 PUT  /api/v1/attendance/{id}     → update
+
+[x] 16.14 GET  /api/v1/leaves              → paginated, filter by status
+[x] 16.15 POST /api/v1/leaves              → apply leave
+[x] 16.16 PUT  /api/v1/leaves/{id}/approve → approve leave
+[x] 16.17 PUT  /api/v1/leaves/{id}/reject  → reject leave
+
+[x] 16.18 GET  /api/v1/leave-types         → list
+[x] 16.19 POST /api/v1/leave-types / PUT / DELETE
+
+[x] 16.20 GET  /api/v1/holidays            → list
+[x] 16.21 POST /api/v1/holidays / PUT / DELETE
+
+[x] 16.22 GET  /api/v1/payroll             → paginated, filter by month/staff
+[x] 16.23 POST /api/v1/payroll/generate    → generate payroll for month
+[x] 16.24 PUT  /api/v1/payroll/{id}/pay    → mark as paid
+
+PAGE WIRING:
+[x] 16.25 staffs.html
+          → DataTable → GET /api/v1/staff
+          → Role filter, dept filter, status filter
+          → Add Staff offcanvas → POST /api/v1/staff
+          → Edit/Delete row actions
+
+[x] 16.26 hrm-departments.html
+          → DataTable → GET /api/v1/departments
+          → Doctor count per dept, staff count
+          → Add/Edit/Delete CRUD offcanvas
+
+[x] 16.27 designation.html
+          → DataTable → GET /api/v1/designations
+          → Add/Edit/Delete CRUD
+
+[x] 16.28 attendance.html
+          → DataTable → GET /api/v1/attendance
+          → Date picker filter, dept filter, staff filter
+          → Status badge: Present/Absent/Late/Half Day
+          → Mark Attendance button → POST /api/v1/attendance
+
+[x] 16.29 leaves.html
+          → DataTable → GET /api/v1/leaves
+          → Status filter: All/Pending/Approved/Rejected
+          → Approve/Reject buttons → PUT endpoints
+          → Apply Leave button → POST /api/v1/leaves
+
+[x] 16.30 leave-type.html
+          → DataTable → GET /api/v1/leave-types
+          → Add/Edit/Delete CRUD
+
+[x] 16.31 holidays.html
+          → DataTable → GET /api/v1/holidays
+          → Type filter: Public/Optional
+          → Add/Edit/Delete CRUD
+          → Calendar view of holidays
+
+[x] 16.32 payroll.html
+          → DataTable → GET /api/v1/payroll
+          → Month filter, staff filter
+          → Generate Payroll button → POST /api/v1/payroll/generate
+          → Mark Paid → PUT /api/v1/payroll/{id}/pay
+          → Net Salary column with NPR formatting
+
+[x] 16.33 payroll-2.html
+          → Summary view with charts:
+            Monthly payroll bar chart (ApexCharts)
+            Department cost breakdown donut chart
+
+
+================================================================================
+  PHASE 17 — FINANCE & ACCOUNTS MODULE
+================================================================================
+
+API ENDPOINTS NEEDED:
+[x] 17.01 GET  /api/v1/expenses            → paginated, filter by category/date
+[x] 17.02 POST /api/v1/expenses
+[x] 17.03 PUT  /api/v1/expenses/{id}
+[x] 17.04 DELETE /api/v1/expenses/{id}
+[x] 17.05 GET  /api/v1/expense-categories  → list
+[x] 17.06 POST/PUT/DELETE /api/v1/expense-categories
+
+[x] 17.07 GET  /api/v1/income              → paginated, filter by source/date
+[x] 17.08 POST /api/v1/income
+[x] 17.09 PUT  /api/v1/income/{id}
+
+[x] 17.10 GET  /api/v1/invoices            → paginated, filter by status/date
+[x] 17.11 GET  /api/v1/invoices/{id}       → full invoice with line items
+[x] 17.12 POST /api/v1/invoices            → create invoice
+[x] 17.13 PUT  /api/v1/invoices/{id}       → update
+[x] 17.14 DELETE /api/v1/invoices/{id}
+
+[x] 17.15 GET  /api/v1/payments            → paginated
+[x] 17.16 POST /api/v1/payments            → record payment
+[x] 17.17 GET  /api/v1/transactions        → all financial transactions list
+
+[x] 17.18 GET  /api/v1/insurance-claims    → paginated, filter by status
+[x] 17.19 POST /api/v1/insurance-claims
+[x] 17.20 PUT  /api/v1/insurance-claims/{id}
+
+[x] 17.21 GET  /api/v1/reports/income
+          → { monthly_income{labels,series}, total_income,
+              income_by_source_chart{labels,series} }
+
+[x] 17.22 GET  /api/v1/reports/expenses
+          → { monthly_expenses{labels,series}, total_expenses,
+              expenses_by_category_chart{labels,series} }
+
+[x] 17.23 GET  /api/v1/reports/profit-loss
+          → { months[], income_series[], expense_series[],
+              profit_series[], net_profit, total_income, total_expenses }
+
+PAGE WIRING:
+[x] 17.24 expenses.html
+          → DataTable → GET /api/v1/expenses
+          → Category filter, date range, status filter
+          → Add/Edit offcanvas → POST/PUT
+          → Total amount in header
+
+[x] 17.25 expense-category.html
+          → DataTable → GET /api/v1/expense-categories
+          → Add/Edit/Delete CRUD with color picker
+
+[x] 17.26 income.html
+          → DataTable → GET /api/v1/income
+          → Source filter, date range filter
+          → Add/Edit offcanvas → POST/PUT
+
+[x] 17.27 invoices.html
+          → DataTable → GET /api/v1/invoices
+          → Status filter: All/Paid/Unpaid/Overdue
+          → Add Invoice button → link to add-invoices.html
+          → Print / Download PDF per row
+
+[x] 17.28 add-invoices.html
+          → Full invoice creation form → POST /api/v1/invoices
+          → Patient search (Select2)
+          → Add line items (dynamic rows)
+          → Auto-calculate total
+
+[x] 17.29 edit-invoices.html
+          → Pre-fill → GET /api/v1/invoices/{id}
+          → Save → PUT /api/v1/invoices/{id}
+
+[x] 17.30 invoices-details.html / invoice-details.html / invoice.html
+          → GET /api/v1/invoices/{id}
+          → Render print-ready invoice layout
+          → Print button (window.print)
+          → Download PDF button
+
+[x] 17.31 payments.html
+          → DataTable → GET /api/v1/payments
+          → Method badge (Cash/Card/Insurance/Online)
+          → Status badge (Paid/Pending/Refunded)
+
+[x] 17.32 transactions.html
+          → DataTable → GET /api/v1/transactions
+          → Type filter: Income/Expense
+          → Amount with +/- color coding
+
+[x] 17.33 insurance-claims.html
+          → DataTable → GET /api/v1/insurance-claims
+          → Status filter: Pending/Approved/Rejected/Paid
+          → Add/Edit claim offcanvas
+
+[x] 17.34 income-report.html
+          → Monthly Income bar chart (ApexCharts)
+            → GET /api/v1/reports/income → monthly_income
+          → Income by Source donut chart → income_by_source_chart
+          → Summary cards: Total Income, Monthly Avg, Top Source
+
+[x] 17.35 expense-report.html
+          → Monthly Expenses bar chart
+            → GET /api/v1/reports/expenses → monthly_expenses
+          → Expenses by Category donut chart
+          → Summary cards: Total Expenses, Monthly Avg, Top Category
+
+[x] 17.36 profit-and-loss.html
+          → P&L line/area chart (ApexCharts) → three series:
+            Income / Expenses / Profit
+            → GET /api/v1/reports/profit-loss
+          → Summary table by month
+          → Net Profit KPI card with +/- badge
+
+
+================================================================================
+  PHASE 18 — ADMINISTRATION SETTINGS PAGES
+================================================================================
+
+API PATTERN: Each settings page = GET /api/v1/settings/{module}
+             to load current config, PUT to save.
+
+[x] 18.01 organization-settings.html
+          → GET/PUT /api/v1/settings/organization
+          → Fields: clinic name, address, phone, email, logo upload,
+            currency, timezone
+
+[x] 18.02 localization-settings.html
+          → GET/PUT /api/v1/settings/localization
+          → Language, date format, time format, timezone
+
+[x] 18.03 language-settings.html / language-settings2.html / language-settings3.html
+          → GET /api/v1/settings/languages → list installed languages
+          → Toggle active/inactive per language
+
+[x] 18.04 email-settings.html
+          → GET/PUT /api/v1/settings/email
+          → SMTP host, port, username, from_name, encryption
+          → "Send Test Email" button → POST /api/v1/settings/email/test
+
+[x] 18.05 email-templates-settings.html
+          → GET /api/v1/settings/email-templates → list templates
+          → Edit template (subject, body HTML editor) → PUT
+
+[x] 18.06 sms-gateways-settings.html
+          → GET/PUT /api/v1/settings/sms
+          → Gateway: Twilio/Nexmo, API credentials
+
+[x] 18.07 sms-templates-settings.html
+          → GET/PUT /api/v1/settings/sms-templates
+
+[x] 18.08 payment-methods-settings.html
+          → GET /api/v1/settings/payment-methods → list gateways
+          → Enable/disable per gateway (Cash, Stripe, Razorpay, etc.)
+
+[x] 18.09 currencies-settings.html
+          → GET /api/v1/settings/currencies → list currencies
+          → Set default currency, exchange rates
+
+[x] 18.10 tax-rates-settings.html
+          → GET/PUT /api/v1/settings/tax-rates
+          → Tax name, percentage, applicable services
+
+[x] 18.11 invoice-settings.html
+          → GET/PUT /api/v1/settings/invoice
+          → Prefix, starting number, footer text, terms
+
+[x] 18.12 invoice-templates-settings.html
+          → GET /api/v1/settings/invoice-templates → preview + select
+
+[x] 18.13 roles-and-permissions.html
+          → GET /api/v1/roles → list roles with permission counts
+          → Per role: Edit permissions matrix
+          → POST /api/v1/roles, PUT /api/v1/roles/{id}
+
+[x] 18.14 permissions.html
+          → Full matrix: modules × actions (view/create/edit/delete)
+          → GET /api/v1/permissions → render checkbox grid
+          → Save → PUT /api/v1/roles/{id}/permissions
+
+[x] 18.15 countries.html / states.html / cities.html
+          → DataTable CRUD for each
+          → GET/POST/PUT/DELETE endpoints
+
+[x] 18.16 storage-settings.html
+          → GET/PUT /api/v1/settings/storage
+          → Local / S3 / R2 config fields
+
+[x] 18.17 ban-ip-address-settings.html
+          → GET /api/v1/settings/banned-ips → list
+          → Add/Remove banned IP form
+
+[x] 18.18 gdpr-cookies-settings.html
+          → GET/PUT /api/v1/settings/gdpr
+          → Cookie consent toggle, policy text
+
+[x] 18.19 seo-setup-settings.html
+          → GET/PUT /api/v1/settings/seo
+          → Meta title, description, keywords, og image
+
+[x] 18.20 sitemap-settings.html
+          → GET /api/v1/settings/sitemap status
+          → "Generate Sitemap" button → POST /api/v1/settings/sitemap/generate
+
+[x] 18.21 maintenance-mode-settings.html
+          → GET/PUT /api/v1/settings/maintenance
+          → Toggle on/off, maintenance message, allowed IPs
+
+[x] 18.22 system-backup-settings.html / database-backup-settings.html
+          → GET /api/v1/settings/backups → list backups with date/size
+          → "Create Backup" → POST /api/v1/settings/backups/create
+          → Download backup file link
+
+[x] 18.23 system-update.html
+          → GET /api/v1/system/version → current + latest version
+          → "Check for Updates" → POST /api/v1/system/check-update
+
+[x] 18.24 clear-cache-settings.html
+          → POST /api/v1/system/clear-cache → success toast
+
+[x] 18.25 cronjob-settings.html
+          → GET /api/v1/settings/cronjobs → list with last_run, next_run
+          → Toggle enable/disable per job
+
+[x] 18.26 notifications-settings.html
+          → GET/PUT /api/v1/settings/notifications
+          → Toggle email/SMS/push per event type
+
+[x] 18.27 preferences-settings.html
+          → GET/PUT /api/v1/settings/preferences
+          → Theme, sidebar style, date format defaults
+
+[x] 18.28 working-hours-settings.html
+          → GET/PUT /api/v1/settings/working-hours
+          → Days of week on/off, open/close time per day
+
+[x] 18.29 cancellation-reason-settings.html
+          → GET/PUT /api/v1/settings/cancellation-reasons
+          → Add/remove reason strings
+
+[x] 18.30 appointment-settings.html
+          → GET/PUT /api/v1/settings/appointments
+          → Slot duration, max per doctor per day, buffer time
+
+[x] 18.31 custom-fields-settings.html
+          → GET /api/v1/settings/custom-fields → list
+          → Add custom field form (name, type, entity: patient/doctor)
+
+[x] 18.32 signatures-settings.html
+          → GET/PUT /api/v1/settings/signatures
+          → Upload signature image, name, designation
+
+[x] 18.33 prefixes-settings.html
+          → GET/PUT /api/v1/settings/prefixes
+          → Patient ID prefix, appointment number prefix, invoice prefix
+
+[x] 18.34 integrations-settings.html
+          → GET /api/v1/settings/integrations → list integrations with status
+          → Toggle connect/disconnect per integration
+
+[x] 18.35 login-and-register-settings.html
+          → GET/PUT /api/v1/settings/auth
+          → Allow public registration toggle, OTP, social auth
+
+[x] 18.36 bank-accounts-settings.html
+          → GET/PUT /api/v1/settings/bank-accounts
+
+
+================================================================================
+  PHASE 19 — CONTENT MANAGEMENT MODULE
+================================================================================
+
+API ENDPOINTS NEEDED:
+[x] 19.01 GET/POST/PUT/DELETE /api/v1/blogs
+[x] 19.02 GET /api/v1/blogs/{id}
+[x] 19.03 GET/POST/PUT/DELETE /api/v1/blog-categories
+[x] 19.04 GET/POST/PUT/DELETE /api/v1/blog-comments
+[x] 19.05 GET/POST/PUT/DELETE /api/v1/pages (static pages)
+[x] 19.06 GET/POST/PUT/DELETE /api/v1/testimonials
+[x] 19.07 GET/POST/PUT/DELETE /api/v1/faqs
+[x] 19.08 GET/POST/DELETE     /api/v1/newsletters (subscribers)
+[x] 19.09 GET/POST/DELETE     /api/v1/gallery
+
+PAGE WIRING:
+[x] 19.10 blogs.html
+          → DataTable → GET /api/v1/blogs
+          → Title, category, author, date, status badge
+          → Add Blog → link to add-blog.html
+
+[x] 19.11 add-blog.html
+          → Rich text editor (TinyMCE or Quill)
+          → Category dropdown → GET /api/v1/blog-categories
+          → Featured image upload
+          → POST /api/v1/blogs on submit
+
+[x] 19.12 edit-blog.html → pre-fill + PUT /api/v1/blogs/{id}
+[x] 19.13 blog-details.html → GET /api/v1/blogs/{id} → render full post
+[x] 19.14 blog-categories.html → DataTable CRUD
+[x] 19.15 blog-comments.html
+          → DataTable → GET /api/v1/blog-comments
+          → Approve/Reject/Delete per comment
+
+[x] 19.16 pages.html
+          → DataTable → GET /api/v1/pages
+          → Add/Edit/Delete CMS pages
+
+[x] 19.17 add-page.html / edit-page.html → rich text form + POST/PUT
+[x] 19.18 testimonials.html → DataTable CRUD
+[x] 19.19 faq.html → Accordion list → GET /api/v1/faqs
+          → Add/Edit/Delete via offcanvas form
+
+[x] 19.20 newsletters.html
+          → Subscribers DataTable → GET /api/v1/newsletters
+          → Export CSV button
+          → Delete subscriber action
+
+[x] 19.21 gallery.html
+          → Image grid → GET /api/v1/gallery
+          → Upload images → POST (multi-file)
+          → Delete image action
+
+[x] 19.22 privacy-policy.html / terms-and-conditions.html
+          → GET /api/v1/pages?slug=privacy-policy (or terms)
+          → Render dynamic content
+
+================================================================================
+  PHASE 20 — SUPPORT / HELPDESK MODULE
+================================================================================
+
+API ENDPOINTS NEEDED:
+[x] 20.01 GET  /api/v1/tickets          → paginated, filter by status/priority
+[x] 20.02 POST /api/v1/tickets          → create ticket
+[x] 20.03 GET  /api/v1/tickets/{id}     → ticket detail with replies
+[x] 20.04 POST /api/v1/tickets/{id}/reply → add reply
+[x] 20.05 PUT  /api/v1/tickets/{id}/status → close/reopen
+[x] 20.06 GET  /api/v1/contact-messages → contact form submissions
+[x] 20.07 GET  /api/v1/delete-account-requests → list
+
+PAGE WIRING:
+[x] 20.08 tickets.html
+          → DataTable → GET /api/v1/tickets
+          → Priority badge, status badge, subject, submitter, date
+          → Status filter: Open/Pending/Resolved/Closed
+
+[x] 20.09 ticket-details.html
+          → GET /api/v1/tickets/{id}
+          → Show ticket info + reply thread
+          → Reply form → POST /api/v1/tickets/{id}/reply
+          → Close/Reopen button → PUT status
+
+[x] 20.10 contact-messages.html
+          → DataTable → GET /api/v1/contact-messages
+          → Mark read, reply via email link, delete
+
+[x] 20.11 delete-account-request.html
+          → DataTable → GET /api/v1/delete-account-requests
+          → Approve/Reject per request
+
+
+================================================================================
+  PHASE 21 — SAAS SUPER ADMIN MODULE
+================================================================================
+
+API ENDPOINTS NEEDED:
+[x] 21.01 GET /api/v1/superadmin/stats
+          → total_clinics, active_clinics, monthly_recurring_revenue,
+            total_patients_served, plan_distribution{starter,pro,enterprise},
+            mrr_growth_chart{labels,series},
+            new_tenants_chart{labels,series}
+
+[x] 21.02 GET  /api/v1/superadmin/clinics        → paginated tenant list
+[x] 21.03 POST /api/v1/superadmin/clinics        → provision new tenant
+[x] 21.04 PUT  /api/v1/superadmin/clinics/{id}   → update tenant
+[x] 21.05 PUT  /api/v1/superadmin/clinics/{id}/suspend
+[x] 21.06 PUT  /api/v1/superadmin/clinics/{id}/activate
+[x] 21.07 GET  /api/v1/superadmin/plans          → list plans
+[x] 21.08 POST /api/v1/superadmin/plans          → create plan
+[x] 21.09 PUT  /api/v1/superadmin/plans/{id}     → update plan
+
+PAGE WIRING:
+[x] 21.10 super-admin-dashboard.html
+          → KPI cards (Total Tenants, Active, MRR, Total Patients)
+            → GET /api/v1/superadmin/stats → inject into DOM
+            (already partially wired — complete the JS fetch)
+          → MRR Growth line chart (ApexCharts)
+            → mrr_growth_chart{labels,series}
+          → Plan Distribution donut chart
+            → plan_distribution data
+          → New Tenants per Month bar chart
+            → new_tenants_chart{labels,series}
+          → Tenant Clinics DataTable → GET /api/v1/superadmin/clinics
+            (Name, Subdomain, Admin Email, Plan, Status, Renewal Date, Actions)
+          → "Provision New Tenant" modal → POST /api/v1/superadmin/clinics
+          → Per row: Access Dashboard link, Suspend/Activate toggle
+
+[x] 21.11 saas.html (landing page)
+          → Pricing section → GET /api/v1/superadmin/plans
+            → Render plan cards dynamically (name, price, features)
+          → "Get Started" buttons → link to register
+          → Already mostly static — just wire pricing dynamically
+
+================================================================================
+  PHASE 22 — COMMUNICATION PAGES
+================================================================================
+
+API ENDPOINTS NEEDED:
+[x] 22.01 GET  /api/v1/messages         → conversation list
+[x] 22.02 GET  /api/v1/messages/{id}    → conversation thread
+[x] 22.03 POST /api/v1/messages         → send message
+[x] 22.04 GET  /api/v1/notifications    → notifications list (all roles)
+[x] 22.05 POST /api/v1/notifications/{id}/read → mark as read
+[x] 22.06 POST /api/v1/notifications/read-all → mark all as read
+
+PAGE WIRING:
+[x] 22.07 chat.html
+          → Left panel: conversation list → GET /api/v1/messages
+          → Right panel: message thread → GET /api/v1/messages/{id}
+          → Send message input → POST /api/v1/messages
+          → Real-time: poll every 5 seconds or WebSocket (if available)
+          → Unread badge counts
+
+[x] 22.08 messages.html (admin view) → same pattern as chat.html
+[x] 22.09 email.html → GET /api/v1/messages?type=email list view
+[x] 22.10 email-reply.html → POST reply with email type
+[x] 22.11 notifications.html (admin)
+          → GET /api/v1/notifications → list with type icons
+          → Mark all read button
+          → Per notification: mark read, delete
+
+[x] 22.12 announcements.html
+          → DataTable → GET /api/v1/announcements (add endpoint)
+          → "New Announcement" form → POST
+          → Target role selector (All/Doctor/Patient/Nurse/etc.)
+
+[x] 22.13 video-call.html / voice-call.html
+          → Static UI — wire to WebRTC or show "Integration Required" note
+          → incoming-call.html / outgoing-call.html → same
+
+[x] 22.14 online-consulation.html / online-consultations.html
+          → DataTable → appointments with type=Online filter
+
+
+================================================================================
+  PHASE 23 — UTILITY / PRODUCTIVITY PAGES
+================================================================================
+
+API ENDPOINTS NEEDED:
+[x] 23.01 GET/POST/PUT/DELETE /api/v1/todos
+[x] 23.02 GET/POST/PUT/DELETE /api/v1/notes
+[x] 23.03 GET /api/v1/calendar-events → all appointments + leaves + holidays
+[x] 23.04 GET/POST/PUT/DELETE /api/v1/contacts
+[x] 23.05 GET /api/v1/call-history
+
+PAGE WIRING:
+[x] 23.06 todo.html / todo-list.html
+          → GET /api/v1/todos → render list/board
+          → Add todo form → POST
+          → Toggle complete → PUT
+          → Delete → DELETE
+
+[x] 23.07 notes.html
+          → GET /api/v1/notes → render note cards
+          → Add/Edit/Delete via offcanvas
+
+[x] 23.08 calendar.html
+          → GET /api/v1/calendar-events → map to FullCalendar events
+          → Appointments (blue), Leaves (orange), Holidays (red)
+          → Click event → show detail modal
+
+[x] 23.09 contacts.html
+          → DataTable → GET /api/v1/contacts
+          → Add/Edit/Delete contact CRUD
+
+[x] 23.10 social-feed.html
+          → GET /api/v1/activities → render as feed cards
+          → Action descriptions, timestamps, actor avatars
+
+[x] 23.11 call-history.html
+          → DataTable → GET /api/v1/call-history
+          → Duration, type (Voice/Video), status, date
+
+[x] 23.12 profile.html
+          → GET /api/v1/me → render full profile
+          → Recent activities, appointments, stats
+
+[x] 23.13 profile-settings.html / account-settings.html
+          → GET/PUT /api/v1/me → edit name, email, phone, avatar
+          → Avatar upload → POST /api/v1/me/avatar
+
+[x] 23.14 security-settings.html
+          → GET /api/v1/me/sessions → active sessions list
+          → POST change-password
+          → Revoke session → DELETE /api/v1/me/sessions/{id}
+
+[x] 23.15 kanban-view.html
+          → GET /api/v1/appointments → group by status
+          → Drag-and-drop via Dragula → PUT status on drop
+
+[x] 23.16 file-manager.html
+          → GET /api/v1/files → file/folder list
+          → Upload → POST /api/v1/files
+          → Delete → DELETE /api/v1/files/{id}
+
+[x] 23.17 search-list.html
+          → GET /api/v1/search?q= → search across patients, doctors,
+            appointments, invoices
+          → Render grouped results by type
+
+[x] 23.18 timeline.html
+          → GET /api/v1/activities → render as vertical timeline
+          → Each event: icon, description, timestamp
+
+[x] 23.19 appointment-report.html
+          → Bar chart: appointments by month (ApexCharts)
+          → Donut chart: by status
+          → Line chart: by doctor
+          → GET /api/v1/reports/appointments
+
+[x] 23.20 patient-report.html
+          → Demographics bar chart: age groups
+          → Gender donut chart
+          → Registration trend line chart
+          → GET /api/v1/reports/patients
+
+
+================================================================================
+  PHASE 24 — SHARED INFRASTRUCTURE (JS utilities, API layer)
+================================================================================
+
+[x] 24.01 Create /frontend/public/assets/js/api.js
+          → Base fetch wrapper with:
+            - Base URL config (window.API_BASE = '/api/v1')
+            - Auto-attach Authorization: Bearer token from localStorage
+            - Unified error handler → show toast on 4xx/5xx
+            - Loading state helper (show/hide spinner)
+            - Response unwrapper (returns data.data or data directly)
+
+[x] 24.02 Create /frontend/public/assets/js/auth-guard.js
+          → Check localStorage for token on page load
+          → If missing → redirect to login.html
+          → Include in every protected page's <head>
+
+[x] 24.03 Create /frontend/public/assets/js/charts.js
+          → Reusable ApexCharts factory functions:
+            - createLineChart(elementId, data, options)
+            - createBarChart(elementId, data, options)
+            - createDonutChart(elementId, data, options)
+            - createRadialChart(elementId, value, options)
+            - createAreaChart(elementId, data, options)
+            - createSparkline(elementId, data)
+          → All accept live data arrays
+          → Handle empty/loading states gracefully
+
+[x] 24.04 Create /frontend/public/assets/js/toast.js
+          → showToast(message, type) → Bootstrap 5 toast
+          → Types: success, error, warning, info
+          → Auto-dismiss after 4 seconds
+
+[x] 24.05 Create /frontend/public/assets/js/datatable-loader.js
+          → loadDataTable(tableId, apiUrl, columns[])
+          → Handles DataTables init + AJAX source
+          → Adds search, pagination, export CSV/Excel button
+
+[x] 24.06 Create /frontend/public/assets/js/select2-ajax.js
+          → Reusable Select2 with AJAX search helper
+          → Used for patient/doctor/medicine search dropdowns
+
+[x] 24.07 Create /frontend/public/assets/js/offcanvas-form.js
+          → Generic offcanvas open/close + form reset
+          → Handle POST/PUT dynamically
+          → Show inline validation errors from API response
+
+[x] 24.08 Wire topbar notification bell (all pages)
+          → Fetch GET /api/v1/notifications (latest 5)
+          → Show unread count badge
+          → Dropdown renders notification items
+          → Mark read on click
+
+[x] 24.09 Wire topbar user dropdown (all pages)
+          → GET /api/v1/me → show name, role, avatar
+          → Logout link → POST /api/v1/logout → clear localStorage
+            → redirect to login.html
+
+[x] 24.10 Wire sidebar clinic switcher (admin, index.html)
+          → GET /api/v1/clinics → populate clinic options dynamically
+
+================================================================================
+  PHASE 25 — APPOINTMENT CALENDAR & SCHEDULER PAGES
+================================================================================
+
+[x] 25.01 appointment-calendar.html
+          → Fetch all appointments → render FullCalendar
+          → Day/Week/Month views
+          → Click event → show detail popover with patient, doctor, status
+          → "New Appointment" button on empty slot click
+
+[x] 25.02 doctor-schedule.html / doctors-schedules.html
+          → Fetch doctor availability slots
+          → Weekly schedule grid (7 columns × time rows)
+          → Toggle slot available/unavailable → PUT /api/v1/doctor/schedules
+
+[x] 25.03 appointment-consultations.html
+          → Filter appointments: type=Consultation
+          → Video call link per row
+
+[x] 25.04 new-appointment.html
+          → Full form: patient search, doctor, date, time slot, type
+          → Slot availability checker → GET /api/v1/doctors/{id}/slots
+          → POST on submit → redirect to appointments.html
+
+================================================================================
+  PHASE 26 — ERROR, MISC & LAYOUT PAGES
+================================================================================
+
+[x] 26.01 error-404.html → Static, add "Go Back" and "Go Home" links
+[x] 26.02 error-500.html → Static, add support contact link
+[x] 26.03 coming-soon.html → Static countdown timer (JS)
+[x] 26.04 under-maintenance.html → Static
+[x] 26.05 pricing.html → GET /api/v1/superadmin/plans → render plan cards
+[x] 26.06 starter.html → Blank authenticated page template
+
+LAYOUT VARIANTS (all use same API wiring, just different CSS):
+[x] 26.07 layout-dark.html → verify API wiring works in dark mode
+[x] 26.08 layout-full-width.html → same
+[x] 26.09 layout-hidden.html → same
+[x] 26.10 layout-hover-view.html → same
+[x] 26.11 layout-mini.html → same
+[x] 26.12 layout-rtl.html → same (verify RTL text direction)
+
+UI COMPONENT PAGES (no API wiring needed — purely static/demo):
+[x] 26.13 All ui-*.html pages → keep as static component demos
+[x] 26.14 All form-*.html pages → keep as static form demos
+[x] 26.15 All icon-*.html pages → keep as static icon references
+[x] 26.16 All chart-*.html pages → keep as static chart demos
+[x] 26.17 tables-basic.html / data-tables.html → static demos
+
+
+================================================================================
+  PHASE 27 — CONTROLLERS (Laravel)
+================================================================================
+
+Create one controller per module under app/Http/Controllers/Api/:
+
+[x] 27.01 AuthController
+          → login, register, logout, forgotPassword, resetPassword,
+            me, changePassword, verifyEmail, verify2FA, unlock
+
+[x] 27.02 DashboardController (extend existing)
+          → stats, appointmentsChart, popularDoctors,
+            doctorScheduleToday, topPatients, recentTransactions,
+            leaveRequests
+
+[x] 27.03 DoctorController
+          → index, show, store, update, destroy,
+            dashboard, schedules, updateSchedules, slots,
+            prescriptions, patients, reviews, leaves, profile
+
+[x] 27.04 PatientController
+          → index, show, store, update, destroy,
+            dashboard, appointments, prescriptions, invoices,
+            vitals, vitalsChart, vitalsWeeklyAvg, healthReports,
+            notifications, doctors, profile
+
+[x] 27.05 NurseController
+          → dashboard, patients, vitals, storeVital,
+            clinicalNotes, storeClinicalNote, criticalAlerts, queue
+
+[x] 27.06 ReceptionistController
+          → dashboard, appointments, storeAppointment,
+            patients, storePatient, queue, generateToken,
+            waitingList, payments
+
+[x] 27.07 PharmacistController
+          → dashboard, medicines, storeMedicine, updateMedicine,
+            stockManagement, expiryAlerts, suppliers, storeSupplier,
+            purchaseOrders, storePO, updatePO, transfers, storeTransfer,
+            orders
+
+[x] 27.08 QueueController
+          → index, generateToken, updateStatus, waitingList,
+            analytics, displayBoard, settings(prefix/limit/rules)
+
+[x] 27.09 LabController
+          → tests, storeTest, reports, showReport, uploadReport, imaging
+
+[x] 27.10 AIController
+          → chat, smartDiagnosis, diagnosisSessions, modelAccuracyChart,
+            riskPrediction, autoSchedule, voiceNotes
+
+[x] 27.11 HRMController
+          → staff CRUD, departments CRUD, designations CRUD,
+            attendance (index/store/update),
+            leaves (index/store/approve/reject),
+            leaveTypes CRUD, holidays CRUD,
+            payroll (index/generate/pay)
+
+[x] 27.12 FinanceController
+          → expenses CRUD, expenseCategories CRUD,
+            income CRUD, invoices CRUD,
+            payments (index/store), transactions,
+            insuranceClaims CRUD,
+            reports (income/expense/profitLoss)
+
+[x] 27.13 PharmacyController (admin, same as Pharmacist but for admin access)
+          → medicines CRUD, stock, expiryAlerts,
+            suppliers CRUD, purchaseOrders CRUD, stockTransfers CRUD
+
+[x] 27.14 SettingsController
+          → organization, localization, language, email (get/put/test),
+            emailTemplates, sms, smsTemplates, paymentMethods,
+            currencies, taxRates, invoiceSettings, invoiceTemplates,
+            roles, permissions, countries/states/cities,
+            storage, bannedIPs, gdpr, seo, sitemap, maintenance,
+            backups, systemUpdate, clearCache, cronjobs,
+            notifications, preferences, workingHours,
+            cancellationReasons, appointmentSettings,
+            customFields, signatures, prefixes, integrations,
+            authSettings, bankAccounts
+
+[x] 27.15 ContentController
+          → blogs CRUD, blogCategories CRUD, blogComments,
+            pages CRUD, testimonials CRUD, faqs CRUD,
+            newsletters, gallery
+
+[x] 27.16 SupportController
+          → tickets (index/store/show/reply/updateStatus),
+            contactMessages, deleteAccountRequests
+
+[x] 27.17 SuperAdminController (extend existing)
+          → stats, clinics CRUD, suspend, activate, plans CRUD
+
+[x] 27.18 MessagesController
+          → conversations (index/show), sendMessage, notifications,
+            markRead, markAllRead, announcements
+
+[x] 27.19 ReportsController
+          → appointments, patients, income, expenses, profitLoss
+
+[x] 27.20 UtilityController
+          → todos CRUD, notes CRUD, calendarEvents, contacts CRUD,
+            callHistory, files (upload/list/delete), search, activities
+
+
+================================================================================
+  PHASE 28 — ROUTES (api.php / web.php)
+================================================================================
+
+[x] 28.01 Create routes/api.php (or move API routes out of web.php)
+          → Group all /api/v1/* routes cleanly
+
+[x] 28.02 Public routes (no auth required):
+          POST   /api/v1/login
+          POST   /api/v1/register
+          POST   /api/v1/forgot-password
+          POST   /api/v1/reset-password
+          POST   /api/v1/verify-email
+          POST   /api/v1/verify-2fa
+          GET    /api/v1/superadmin/plans (public pricing page)
+
+[x] 28.03 Auth-protected routes (Sanctum middleware):
+          GET    /api/v1/me
+          POST   /api/v1/logout
+          POST   /api/v1/me/avatar
+          POST   /api/v1/auth/change-password
+          GET    /api/v1/notifications
+          POST   /api/v1/notifications/{id}/read
+          POST   /api/v1/notifications/read-all
+          GET    /api/v1/messages, POST, GET /{id}
+          GET    /api/v1/calendar-events
+          GET    /api/v1/search
+          GET    /api/v1/activities
+
+[x] 28.04 Admin routes (role=admin):
+          /api/v1/dashboard/*
+          /api/v1/doctors (CRUD)
+          /api/v1/patients (CRUD)
+          /api/v1/appointments (CRUD)
+          /api/v1/queues/* (full access)
+          /api/v1/lab/* (full access)
+          /api/v1/hrm/* (full access)
+          /api/v1/finance/* (full access)
+          /api/v1/pharmacy/* (full access)
+          /api/v1/settings/* (full access)
+          /api/v1/content/* (full access)
+          /api/v1/support/* (full access)
+          /api/v1/reports/* (full access)
+
+[x] 28.05 Doctor routes (role=doctor):
+          GET    /api/v1/doctor/dashboard
+          /api/v1/doctor/appointments (own only)
+          /api/v1/doctor/schedules
+          /api/v1/doctor/prescriptions
+          /api/v1/doctor/patients (own patients)
+          /api/v1/doctor/reviews
+          /api/v1/doctor/leaves
+          /api/v1/doctor/profile
+
+[x] 28.06 Patient routes (role=patient):
+          GET    /api/v1/patient/dashboard
+          /api/v1/patient/appointments
+          /api/v1/patient/doctors (read only)
+          /api/v1/patient/prescriptions (own only)
+          /api/v1/patient/invoices (own only)
+          /api/v1/patient/vitals (own only)
+          /api/v1/patient/health-reports
+          /api/v1/patient/notifications
+          /api/v1/patient/profile
+          /api/v1/ai/* (patient-facing AI)
+
+[x] 28.07 Nurse routes (role=nurse):
+          /api/v1/nurse/*
+
+[x] 28.08 Receptionist routes (role=receptionist):
+          /api/v1/receptionist/*
+
+[x] 28.09 Pharmacist routes (role=pharmacist):
+          /api/v1/pharmacist/*
+
+[x] 28.10 Super Admin routes (role=super_admin):
+          /api/v1/superadmin/*
+
+================================================================================
+  PHASE 29 — TESTING & VERIFICATION
+================================================================================
+
+[x] 29.01 Run php artisan migrate:fresh --seed
+          → Verify all table counts match seeder expectations
+
+[x] 29.02 Test all GET endpoints return correct JSON structure
+          → Use Artisan tinker or Postman collection
+
+[x] 29.03 Test all POST/PUT endpoints with valid + invalid data
+          → Verify validation error responses (422 with errors object)
+
+[x] 29.04 Verify auth flow: login → get token → use token → logout
+          → Test each role login redirects to correct dashboard
+
+[x] 29.05 Verify every ApexCharts chart renders with real data
+          → Open each dashboard page — no empty charts, no JS errors
+
+[x] 29.06 Verify every DataTable renders with real rows
+          → Pagination, search, filter all work
+
+[x] 29.07 Verify every form submit (POST/PUT) works correctly
+          → Success toast shown, table refreshes with new data
+
+[x] 29.08 Verify queue-live.html auto-refresh every 15s
+          → queue-token-display.html auto-refresh every 5s
+
+[x] 29.09 Verify notification bell in topbar shows real unread count
+          → Clicking marks as read
+
+[x] 29.10 Verify logout clears localStorage and redirects to login.html
+
+[x] 29.11 Verify all NPR currency values are formatted with commas
+          → e.g. 6,500.00 not 6500
+
+[x] 29.12 Fix any CORS issues (add CORS headers for local dev)
+          → php artisan config:cache after any .env changes
+
+[x] 29.13 Verify mobile responsiveness on each dashboard page
+          → Sidebar collapses, charts resize, tables scroll horizontally
+
+================================================================================
+  SUMMARY COUNT
+================================================================================
+
+  Phase 1  — Database Migrations:    28 tasks
+  Phase 2  — Models:                 27 tasks
+  Phase 3  — Seeders:                30 tasks
+  Phase 4  — Auth API + Wiring:      15 tasks
+  Phase 5  — Admin Dashboard:        17 tasks
+  Phase 6  — Doctor Portal:          30 tasks
+  Phase 7  — Patient Portal:         36 tasks
+  Phase 8  — Nurse Portal:           24 tasks
+  Phase 9  — Receptionist Portal:    28 tasks
+  Phase 10 — Pharmacist Portal:      30 tasks
+  Phase 11 — Admin Clinic Ops:       38 tasks
+  Phase 12 — Queue Management:       17 tasks
+  Phase 13 — Clinical System:        12 tasks
+  Phase 14 — AI & Automation:        12 tasks
+  Phase 15 — Pharmacy Admin:         20 tasks
+  Phase 16 — HRM Module:             33 tasks
+  Phase 17 — Finance Module:         36 tasks
+  Phase 18 — Admin Settings:         36 tasks
+  Phase 19 — Content Management:     22 tasks
+  Phase 20 — Support / Helpdesk:     11 tasks
+  Phase 21 — SaaS Super Admin:       11 tasks
+  Phase 22 — Communication:          14 tasks
+  Phase 23 — Utility Pages:          20 tasks
+  Phase 24 — Shared JS Infrastructure:10 tasks
+  Phase 25 — Calendar & Scheduler:    4 tasks
+  Phase 26 — Error/Misc/Layout:       17 tasks
+  Phase 27 — Controllers:             20 tasks
+  Phase 28 — Routes:                  10 tasks
+  Phase 29 — Testing & Verification:  13 tasks
+
+  TOTAL: ~671 tasks across 29 phases
+  Covers all 351 HTML pages + full backend API
+
+================================================================================
+  END OF TODO LIST
+================================================================================

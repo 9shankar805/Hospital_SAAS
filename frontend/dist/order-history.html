@@ -1,0 +1,706 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+	<!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Order History - Medical & Hospital - Bootstrap 5 Admin Template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="author" content="Dreams Technologies">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="assets/img/favicon.png?v=2.1">
+
+    <!-- Apple Icon -->
+    <link rel="apple-touch-icon" href="assets/img/apple-icon.png">
+
+    <!-- Theme Config Js -->
+    <script src="assets/js/theme-script.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css?v=2">
+
+    <!-- Fontawesome CSS -->
+	<link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css?v=2">
+	<link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css?v=2">
+
+    <!-- Tabler Icon CSS -->
+    <link rel="stylesheet" href="assets/plugins/tabler-icons/tabler-icons.min.css?v=2">
+
+    <!-- Select2 CSS -->
+    <link rel="stylesheet" href="assets/plugins/select2/css/select2.min.css?v=2">
+
+    <!-- Daterangepikcer CSS -->
+	<link rel="stylesheet" href="assets/plugins/daterangepicker/daterangepicker.css?v=2">
+
+    <!-- Datetimepicker CSS -->
+    <link rel="stylesheet" href="assets/css/bootstrap-datetimepicker.min.css?v=2">
+
+    <!-- Simplebar CSS -->
+    <link rel="stylesheet" href="assets/plugins/simplebar/simplebar.min.css?v=2">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="assets/css/style.css?v=2" id="app-style">
+
+
+    <script src="assets/js/auth-guard.js"></script>
+</head>
+
+<body>
+
+    <!-- Begin Wrapper -->
+    <div class="main-wrapper">
+
+        <!-- Topbar Start -->
+        <header class="navbar-header">
+            <div class="page-container topbar-menu">
+                <div class="d-flex align-items-center gap-2">
+
+                    <!-- Logo -->
+                    <a href="index.html" class="logo">
+
+                        <!-- Logo Normal -->
+                        <span class="logo-light">
+                            <span class="logo-lg"><img src="assets/img/logo.svg?v=2.1" alt="logo"></span>
+                            <span class="logo-sm"><img src="assets/img/favicon.png?v=2.1" alt="small logo"></span>
+                        </span>
+
+                        <!-- Logo Dark -->
+                        <span class="logo-dark">
+                            <span class="logo-lg"><img src="assets/img/logo-white.svg?v=2.1" alt="dark logo"></span>
+                        </span>
+                    </a>
+
+                    <!-- Sidebar Mobile Button -->
+                    <a id="mobile_btn" class="mobile-btn" href="#sidebar">
+                        <i class="ti ti-menu-deep fs-24"></i>
+                    </a>
+
+                    <button class="sidenav-toggle-btn btn border-0 p-0 active" id="toggle_btn2">
+                        <i class="ti ti-arrow-right"></i>
+                    </button>
+
+                    <!-- Search -->
+                    <div class="me-auto d-flex align-items-center header-search d-lg-flex d-none">
+                        <!-- Search -->
+                        <div class="input-icon-start position-relative me-2">
+                            <span class="input-icon-addon">
+                                <i class="ti ti-search"></i>
+                            </span>
+                           <input type="text" class="form-control shadow-sm" placeholder="Search">
+                           <span class="input-icon-addon text-dark shadow fs-18 d-inline-flex p-0 header-search-icon"><i class="ti ti-command"></i></span>
+                        </div>
+                        <!-- /Search -->
+                    </div>
+
+                </div>
+
+                <div class="d-flex align-items-center">
+
+                    <!-- Search for Mobile -->
+                    <div class="header-item d-flex d-lg-none me-2">
+                        <button class="topbar-link btn btn-icon" data-bs-toggle="modal" data-bs-target="#searchModal" type="button">
+                            <i class="ti ti-search fs-16"></i>
+                        </button>
+                    </div>
+
+                    <!-- AI Assistance -->
+					<a href="javascript:void(0);" class="btn btn-liner-gradient me-3 d-lg-flex d-none">AI Assistance<i class="ti ti-chart-bubble-filled ms-1"></i></a>
+
+                    <div class="header-item">
+                        <div class="dropdown me-2">
+                            <a href="profile-settings.html" class="btn topbar-link"><i class="ti ti-settings-2"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Light/Dark Mode Button -->
+                    <div class="header-item d-none d-sm-flex me-2">
+                        <button class="topbar-link btn btn-icon topbar-link" id="light-dark-mode" type="button">
+                            <i class="ti ti-moon fs-16"></i>
+                        </button>
+                    </div>
+
+
+					<!-- Notification Dropdown -->
+                    <div class="header-item">
+						<div class="dropdown me-3">
+
+							<button class="topbar-link btn btn-icon topbar-link dropdown-toggle drop-arrow-none" data-bs-toggle="dropdown" data-bs-offset="0,24" type="button" aria-haspopup="false" aria-expanded="false">
+								<i class="ti ti-bell-check fs-16 animate-ring"></i>
+								<span class="notification-badge"></span>
+							</button>
+
+							<div class="dropdown-menu p-0 dropdown-menu-end dropdown-menu-lg" style="min-height: 300px;">
+
+								<div class="p-2 border-bottom">
+									<div class="row align-items-center">
+										<div class="col">
+											<h6 class="m-0 fs-16 fw-semibold"> Notifications</h6>
+										</div>
+									</div>
+								</div>
+
+								<!-- Notification Body -->
+								<div class="notification-body position-relative z-2 rounded-0" data-simplebar>
+
+									<!-- Item-->
+									<div class="dropdown-item notification-item py-3 text-wrap border-bottom" id="notification-1">
+										<div class="d-flex">
+											<div class="me-2 position-relative flex-shrink-0">
+												<span class="avatar-md rounded-circle bg-light-danger d-flex align-items-center justify-content-center"><i class="ti ti-pill text-danger"></i></span>
+											</div>
+											<div class="flex-grow-1">
+												<p class="mb-0 fw-medium text-dark">Stock Alert</p>
+												<p class="mb-1 text-wrap">
+													<span class="fw-medium text-dark">Paracetamol 500mg</span> is low on stock.
+												</p>
+												<div class="d-flex justify-content-between align-items-center">
+													<span class="fs-12"><i class="ti ti-clock me-1"></i>4 min ago</span>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<!-- Item-->
+									<div class="dropdown-item notification-item py-3 text-wrap" id="notification-2">
+										<div class="d-flex">
+											<div class="me-2 position-relative flex-shrink-0">
+												<span class="avatar-md rounded-circle bg-light-warning d-flex align-items-center justify-content-center"><i class="ti ti-calendar-x text-warning"></i></span>
+											</div>
+											<div class="flex-grow-1">
+												<p class="mb-0 fw-medium text-dark">Expiry Alert</p>
+												<p class="mb-1 text-wrap">
+													<span class="fw-medium text-dark">Amoxicillin 250mg</span> batch expires in 5 days.
+												</p>
+												<div class="d-flex justify-content-between align-items-center">
+													<span class="fs-12"><i class="ti ti-clock me-1"></i>20 min ago</span>
+												</div>
+											</div>
+										</div>
+									</div>
+
+								</div>
+
+								<!-- View All-->
+								<div class="p-2 rounded-bottom border-top text-center">
+									<a href="notifications.html" class="text-center text-decoration-underline fs-14 mb-0">
+										View All Notifications
+									</a>
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+					<!-- User Dropdown -->
+					<div class="dropdown profile-dropdown d-flex align-items-center justify-content-center">
+                        <a href="javascript:void(0);" class="topbar-link dropdown-toggle drop-arrow-none position-relative" data-bs-toggle="dropdown" data-bs-offset="0,22" aria-haspopup="false" aria-expanded="false">
+                            <img src="assets/img/users/user-09.jpg?v=2.0" width="32" class="rounded-circle d-flex" alt="user-image">
+                            <span class="online text-success"><i class="ti ti-circle-filled d-flex bg-white rounded-circle border border-1 border-white"></i></span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end dropdown-menu-md p-2">
+
+                            <div class="d-flex align-items-center bg-light rounded-3 p-2 mb-2">
+                                <img src="assets/img/users/user-09.jpg?v=2.0" class="rounded-circle" width="42" height="42" alt="">
+                                <div class="ms-2">
+                                    <p class="fw-medium text-dark mb-0">Sarah Mills</p>
+                                    <span class="d-block fs-13">Pharmacist</span>
+                                </div>
+                            </div>
+
+                            <!-- Item-->
+                            <a href="profile-settings.html" class="dropdown-item">
+                                <i class="ti ti-user-circle me-1 align-middle"></i>
+                                <span class="align-middle">Profile Settings</span>
+                            </a>
+
+                            <!-- item -->
+                            <div class="form-check form-switch form-check-reverse d-flex align-items-center justify-content-between dropdown-item mb-0">
+                                <label class="form-check-label" for="notify"><i class="ti ti-bell me-1"></i>Notifications</label>
+                                <input class="form-check-input me-0" type="checkbox" role="switch" id="notify">
+                            </div>
+
+                            <!-- Item-->
+                            <div class="pt-2 mt-2 border-top">
+                                <a href="login.html" class="dropdown-item text-danger">
+                                    <i class="ti ti-logout me-1 fs-17 align-middle"></i>
+                                    <span class="align-middle">Log Out</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </header>
+        <!-- Topbar End -->
+
+        <!-- Search Modal -->
+        <div class="modal fade" id="searchModal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content bg-transparent">
+                    <div class="card shadow-none mb-0">
+                        <div class="px-3 py-2 d-flex flex-row align-items-center" id="search-top">
+                            <i class="ti ti-search fs-22"></i>
+                            <input type="search" class="form-control border-0" placeholder="Search">
+                            <button type="button" class="btn p-0" data-bs-dismiss="modal" aria-label="Close"><i class="ti ti-x fs-22"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidenav Menu Start -->
+        <div class="sidebar" id="sidebar">
+
+            <!-- Start Logo -->
+            <div class="sidebar-logo">
+                <div>
+                    <!-- Logo Normal -->
+                    <a href="index.html" class="logo logo-normal">
+                        <img src="assets/img/logo.svg?v=2.1" alt="Logo">
+                    </a>
+
+                    <!-- Logo Small -->
+                    <a href="index.html" class="logo-small">
+                        <img src="assets/img/favicon.png?v=2.1" alt="Logo">
+                    </a>
+
+                    <!-- Logo Dark -->
+                    <a href="index.html" class="dark-logo">
+                        <img src="assets/img/logo-white.svg?v=2.1" alt="Logo">
+                    </a>
+                </div>
+                <button class="sidenav-toggle-btn btn border-0 p-0 active" id="toggle_btn">
+                    <i class="ti ti-arrow-left text-body"></i>
+                </button>
+
+                <!-- Sidebar Menu Close -->
+                <button class="sidebar-close">
+                    <i class="ti ti-x align-middle"></i>
+                </button>
+            </div>
+            <!-- End Logo -->
+
+            <!-- Sidenav Menu -->
+            <div class="sidebar-inner" data-simplebar>
+                <div id="sidebar-menu" class="sidebar-menu">
+                    <ul>
+                        <li class="menu-title"><span>Main Menu</span></li>
+                        <li>
+                            <ul>
+                                <li>
+                                    <a href="pharmacist-dashboard.html">
+                                        <i class="ti ti-layout-dashboard"></i><span>Dashboard</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="pharmacist-medicines.html">
+                                        <i class="ti ti-pill"></i><span>Medicines</span>
+                                    </a>
+                                </li>
+                                <li class="submenu">
+                                    <a href="javascript:void(0);">
+                                        <i class="ti ti-packages"></i><span>Inventory</span>
+                                        <span class="menu-arrow"></span>
+                                    </a>
+                                    <ul>
+                                        <li><a href="pharmacist-stock-management.html">Stock Management</a></li>
+                                        <li><a href="pharmacist-expiry-alerts.html">Expiry Alerts</a></li>
+                                        <li><a href="pharmacist-suppliers.html">Suppliers</a></li>
+                                        <li><a href="pharmacist-purchase-orders.html">Purchase Orders</a></li>
+                                        <li><a href="pharmacist-transfers.html">Transfers</a></li>
+                                    </ul>
+                                </li>
+                                <li class="active">
+                                    <a href="order-history.html">
+                                        <i class="ti ti-shopping-cart"></i><span>Orders</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="pharmacist-messages.html">
+                                        <i class="ti ti-messages"></i><span>Messages</span>
+                                    </a>
+                                </li>
+                                <li class="submenu">
+                                    <a href="javascript:void(0);">
+                                        <i class="ti ti-settings"></i><span>Settings</span>
+                                        <span class="menu-arrow"></span>
+                                    </a>
+                                    <ul>
+                                        <li><a href="pharmacist-profile-settings.html">Profile Settings</a></li>
+                                        <li><a href="pharmacist-password-settings.html">Change Password</a></li>
+                                        <li><a href="pharmacist-prescription-preferences.html">Prescription Preferences</a></li>
+                                        <li><a href="pharmacist-inventory-preferences.html">Inventory Preferences</a></li>
+                                        <li><a href="pharmacist-printer-settings.html">Printer Settings</a></li>
+                                        <li><a href="pharmacist-notification-settings.html">Notifications</a></li>
+                                        <li><a href="pharmacist-security-settings.html">Security</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                </div>
+                <div class="sidebar-footer border-top mt-3">
+                    <div class="trial-item mt-0 p-3 text-center">
+                        <div class="trial-item-icon rounded-4 mb-3 p-2 text-center shadow-sm d-inline-flex">
+                            <img src="assets/img/icons/sidebar-icon.svg?v=2.0" alt="img">
+                        </div>
+                        <div>
+                            <h6 class="fs-14 fw-semibold mb-1">Upgrade To Pro</h6>
+                            <p class="fs-13 mb-0">Check 1 min video and begin use NepXMedica like a pro</p>
+                        </div>
+                        <a href="javascript:void(0);" class="close-icon shadow-sm"><i class="ti ti-x"></i></a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- Sidenav Menu End -->
+
+        <!-- ========================
+			Start Page Content
+		========================= -->
+
+        <!-- ========================
+			Start Page Content
+		========================= -->
+
+        <div class="page-wrapper">
+
+            <!-- Start Content -->
+            <div class="content">
+
+                <!-- Start Page Header -->
+                <div class="d-flex align-items-sm-center flex-wrap gap-3 mb-3 pb-3 border-bottom">
+                    <div class="flex-grow-1">
+                        <h1 class="sub-title fw-bold mb-0">Order History<span class="badge badge-soft-primary border border-primary fs-13 fw-medium ms-2">Total Orders : 486</span></h1>
+                    </div>
+                    <div class="text-end d-flex flex-wrap gap-2">
+                        <a href="purchase-orders.html" class="btn btn-outline-white bg-white fs-13 btn-md d-inline-flex align-items-center"><i class="ti ti-shopping-cart me-1"></i>Purchase Orders</a>
+                        <a href="medicines.html" class="btn btn-primary fs-13 btn-md d-inline-flex align-items-center"><i class="ti ti-pill me-1"></i>Dispense Medicine</a>
+                    </div>
+				</div>
+				<!-- End Page Header -->
+
+                <!-- row start -->
+                <div class="row">
+                    <div class="col-xl-3 col-md-6 d-flex">
+                        <div class="card shadow-sm flex-fill w-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <p class="mb-1">Orders Today</p>
+                                        <h2 class="custom-title fw-bold mb-0">32</h2>
+                                    </div>
+                                    <span class="avatar border border-primary text-primary rounded-2 flex-shrink-0"><i class="ti ti-shopping-cart fs-20"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 d-flex">
+                        <div class="card shadow-sm flex-fill w-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <p class="mb-1">Dispensed</p>
+                                        <h2 class="custom-title fw-bold mb-0">27</h2>
+                                    </div>
+                                    <span class="avatar border border-success text-success rounded-2 flex-shrink-0"><i class="ti ti-circle-check fs-20"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 d-flex">
+                        <div class="card shadow-sm flex-fill w-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <p class="mb-1">Awaiting Pickup</p>
+                                        <h2 class="custom-title fw-bold mb-0">4</h2>
+                                    </div>
+                                    <span class="avatar border border-warning text-warning rounded-2 flex-shrink-0"><i class="ti ti-clock-exclamation fs-20"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 d-flex">
+                        <div class="card shadow-sm flex-fill w-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <p class="mb-1">Cancelled</p>
+                                        <h2 class="custom-title fw-bold mb-0">1</h2>
+                                    </div>
+                                    <span class="avatar border border-danger text-danger rounded-2 flex-shrink-0"><i class="ti ti-circle-x fs-20"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- row end -->
+
+                <!-- row start -->
+                <div class="row">
+                    <div class="col-12 d-flex">
+                        <div class="card shadow-sm flex-fill w-100">
+                            <div class="card-header">
+                                <h2 class="list-title fw-bold mb-0">Orders Dispensed (Last 7 Days)</h2>
+                            </div>
+                            <div class="card-body pb-0">
+                                <div id="pharmacy-order-history-trend"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- row end -->
+
+                <div class=" d-flex align-items-center justify-content-between flex-wrap row-gap-3 mb-3">
+                    <div class="search-set mb-0">
+                        <div class="d-flex align-items-center flex-wrap gap-2">
+                            <div class="table-search d-flex align-items-center mb-0">
+                                <div class="input-icon-start position-relative">
+                                    <span class="input-icon-addon"><i class="ti ti-search"></i></span>
+                                    <input type="text" class="form-control" placeholder="Search by order ID or patient">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex table-dropdown mb-0 right-content align-items-center flex-wrap row-gap-3">
+                        <div class="dropdown">
+                            <a href="javascript:void(0);" class="btn btn-white bg-white fs-14 py-1 border d-inline-flex text-dark align-items-center" data-bs-toggle="dropdown">
+                                All Status <i class="ti ti-chevron-down ms-1"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="javascript:void(0);">All Status</a></li>
+                                <li><a class="dropdown-item" href="javascript:void(0);">Dispensed</a></li>
+                                <li><a class="dropdown-item" href="javascript:void(0);">Awaiting Pickup</a></li>
+                                <li><a class="dropdown-item" href="javascript:void(0);">Cancelled</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- card start -->                
+                <div class="table-responsive table-nowrap">
+                    <table class="table border">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Patient</th>
+                                <th>Medicine</th>
+                                <th>Prescribed By</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <!-- Added anchor link to order ID -->
+                                <td class="fw-medium text-dark"><a href="javascript:void(0);" data-bs-toggle="offcanvas" data-bs-target="#view_order">#ORD-6201</a></td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <a href="patient-details.html" class="avatar me-2"><img src="assets/img/profiles/avatar-06.jpg?v=2.0" alt="img" class="rounded-circle"></a>
+                                        <div><h3 class="fs-14 mb-0"><a href="patient-details.html" class="fw-medium">Alberto Ripley</a></h3></div>
+                                    </div>
+                                </td>
+                                <td>Amoxicillin 250mg</td>
+                                <td>Dr. Michael Smith</td>
+                                <td>27 May 2025</td>
+                                <td class="fw-semibold text-dark">NPR 12.60</td>
+                                <td><span class="badge bg-success fw-medium">Dispensed</span></td>
+                               <td>
+                                    <div class="action-item">
+                                        <a href="javascript:void(0);" data-bs-toggle="offcanvas" data-bs-target="#view_order">
+                                            <i class="ti ti-eye"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <!-- Added anchor link to order ID -->
+                                <td class="fw-medium text-dark"><a href="javascript:void(0);" data-bs-toggle="offcanvas" data-bs-target="#view_order">#ORD-6200</a></td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <a href="patient-details.html" class="avatar me-2"><img src="assets/img/profiles/avatar-12.jpg?v=2.0" alt="img" class="rounded-circle"></a>
+                                        <div><h3 class="fs-14 mb-0"><a href="patient-details.html" class="fw-medium">Susan Babin</a></h3></div>
+                                    </div>
+                                </td>
+                                <td>Paracetamol 500mg</td>
+                                <td>Dr. Sarah Patel</td>
+                                <td>27 May 2025</td>
+                                <td class="fw-semibold text-dark">NPR 4.50</td>
+                                <td><span class="badge bg-warning fw-medium">Awaiting Pickup</span></td>
+                               <td>
+                                    <div class="action-item">
+                                        <a href="javascript:void(0);" data-bs-toggle="offcanvas" data-bs-target="#view_order">
+                                            <i class="ti ti-eye"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <!-- Added anchor link to order ID -->
+                                <td class="fw-medium text-dark"><a href="javascript:void(0);" data-bs-toggle="offcanvas" data-bs-target="#view_order">#ORD-6199</a></td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <a href="patient-details.html" class="avatar me-2"><img src="assets/img/profiles/avatar-08.jpg?v=2.0" alt="img" class="rounded-circle"></a>
+                                        <div><h3 class="fs-14 mb-0"><a href="patient-details.html" class="fw-medium">Carol Lam</a></h3></div>
+                                    </div>
+                                </td>
+                                <td>Ibuprofen 400mg</td>
+                                <td>Dr. Michael Smith</td>
+                                <td>26 May 2025</td>
+                                <td class="fw-semibold text-dark">NPR 5.40</td>
+                                <td><span class="badge bg-danger fw-medium">Cancelled</span></td>
+                               <td>
+                                    <div class="action-item">
+                                        <a href="javascript:void(0);" data-bs-toggle="offcanvas" data-bs-target="#view_order">
+                                            <i class="ti ti-eye"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <!-- Added anchor link to order ID -->
+                                <td class="fw-medium text-dark"><a href="javascript:void(0);" data-bs-toggle="offcanvas" data-bs-target="#view_order">#ORD-6198</a></td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <a href="patient-details.html" class="avatar me-2"><img src="assets/img/profiles/avatar-22.jpg?v=2.0" alt="img" class="rounded-circle"></a>
+                                        <div><h3 class="fs-14 mb-0"><a href="patient-details.html" class="fw-medium">Marsha Noland</a></h3></div>
+                                    </div>
+                                </td>
+                                <td>Cough Syrup 100ml</td>
+                                <td>Dr. Sarah Patel</td>
+                                <td>26 May 2025</td>
+                                <td class="fw-semibold text-dark">NPR 9.60</td>
+                                <td><span class="badge bg-success fw-medium">Dispensed</span></td>
+                                <td>
+                                    <div class="action-item">
+                                        <a href="javascript:void(0);" data-bs-toggle="offcanvas" data-bs-target="#view_order">
+                                            <i class="ti ti-eye"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <!-- Added anchor link to order ID -->
+                                <td class="fw-medium text-dark"><a href="javascript:void(0);" data-bs-toggle="offcanvas" data-bs-target="#view_order">#ORD-6197</a></td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <a href="patient-details.html" class="avatar me-2"><img src="assets/img/profiles/avatar-25.jpg?v=2.0" alt="img" class="rounded-circle"></a>
+                                        <div><h3 class="fs-14 mb-0"><a href="patient-details.html" class="fw-medium">John Elsass</a></h3></div>
+                                    </div>
+                                </td>
+                                <td>Insulin Vials</td>
+                                <td>Dr. Michael Smith</td>
+                                <td>25 May 2025</td>
+                                <td class="fw-semibold text-dark">NPR 62.50</td>
+                                <td><span class="badge bg-success fw-medium">Dispensed</span></td>
+                               <td>
+                                    <div class="action-item">
+                                        <a href="javascript:void(0);" data-bs-toggle="offcanvas" data-bs-target="#view_order">
+                                            <i class="ti ti-eye"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+                <!-- card end -->
+
+            </div>
+            <!-- End Content -->
+            <!-- Footer Start -->
+            <div class="footer text-center bg-white p-2 border-top">
+                <p class="text-dark mb-0">2026 &copy; <a href="javascript:void(0);" class="link-primary">NepXMedica</a>, All Rights Reserved</p>
+            </div>
+            <!-- Footer End -->
+
+        </div>
+
+        <!-- ========================
+			End Page Content
+		========================= -->
+
+    </div>
+    <!-- End Wrapper -->
+
+    <!-- Start View Order -->
+    <div class="offcanvas offcanvas-offset offcanvas-end" tabindex="-1" id="view_order">
+        <div class="offcanvas-header d-block pb-0 px-0">
+            <div class="border-bottom d-flex align-items-center justify-content-between pb-3 px-3">
+                <h2 class="offcanvas-title fs-18 fw-bold">Order Details <span class="badge badge-soft-primary border pt-1 px-2 border-primary fw-medium ms-2">#ORD-6201</span></h2>
+                <button type="button" class="btn-close custom-btn-close opacity-100" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+        </div>
+        <div class="offcanvas-body pt-0 px-0">
+            <div class="px-3 pt-3 d-flex align-items-center">
+                <span class="avatar avatar-lg me-2"><img src="assets/img/profiles/avatar-06.jpg?v=2.0" alt="" class="rounded-circle"></span>
+                <div>
+                    <h3 class="fs-15 mb-1">Alberto Ripley</h3>
+                    <span class="badge bg-success fw-medium">Dispensed</span>
+                </div>
+            </div>
+            <h3 class="sub-subtitle bg-light py-2 px-3 text-dark fw-bold mt-3">Order Information</h3>
+            <div class="px-3 my-4">
+                <p class="text-dark mb-3 fw-semibold d-flex align-items-center justify-content-between">Prescribed By <span class="text-body fw-normal">Dr. Michael Smith</span></p>
+                <p class="text-dark mb-3 fw-semibold d-flex align-items-center justify-content-between">Order Date <span class="text-body fw-normal">27 May 2025</span></p>
+                <p class="text-dark mb-3 fw-semibold d-flex align-items-center justify-content-between">Payment Method <span class="text-body fw-normal">Cash</span></p>
+                <p class="text-dark mb-0 fw-semibold d-flex align-items-center justify-content-between">Amount <span class="text-body fw-normal">NPR 12.60</span></p>
+            </div>
+            <h3 class="sub-subtitle bg-light py-2 px-3 text-dark fw-bold">Items</h3>
+            <div class="px-3 my-4">
+                <div class="d-flex align-items-center justify-content-between mb-0">
+                    <div>
+                        <h4 class="fs-14 mb-1">Amoxicillin 250mg</h4>
+                        <p class="mb-0 fs-13">Qty: 20 &middot; NPR 0.63/unit</p>
+                    </div>
+                    <p class="mb-0 fw-semibold text-dark">NPR 12.60</p>
+                </div>
+            </div>
+            <div class="px-3">
+                <a href="javascript:void(0);" class="btn btn-primary w-100"><i class="ti ti-printer me-1"></i>Print Receipt</a>
+            </div>
+        </div>
+    </div>
+    <!-- End View Order -->
+
+    <!-- jQuery -->
+    <script src="assets/js/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+
+	<!-- Simplebar JS -->
+	<script src="assets/plugins/simplebar/simplebar.min.js"></script>
+
+    <!-- Chart JS -->
+    <script src="assets/plugins/apexchart/apexcharts.min.js"></script>
+    <script src="assets/plugins/apexchart/chart-data.js"></script>
+
+    <!-- Daterangepikcer JS -->
+	<script src="assets/js/moment.min.js"></script>
+	<script src="assets/plugins/daterangepicker/daterangepicker.js"></script>
+
+    <!-- Datetimepicker JS -->
+    <script src="assets/js/moment.min.js"></script>
+    <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
+
+    <!-- Select2 JS -->
+    <script src="assets/plugins/select2/js/select2.min.js"></script>
+
+    <!-- Main JS -->
+    <script src="assets/js/script.js"></script>
+
+<script src="assets/js/api-connector.js?v=2.0"></script>
+<script src="assets/js/nepxmedica-portals.js"></script>
+</body>
