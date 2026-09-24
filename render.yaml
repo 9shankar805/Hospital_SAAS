@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: hospital-saas-backend
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /up
+    envVars:
+      - key: APP_NAME
+        value: Hospital_SAAS
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_URL
+        sync: false
+      - key: APP_KEY
+        generateValue: true
+      - key: DB_CONNECTION
+        value: sqlite
+      - key: PORT
+        value: "8000"
+      - key: SERVER_NAME
+        value: "http://:8000"
+      - key: TRUSTED_PROXIES
+        value: "*"
